@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter une personne</title>
+    <link rel="stylesheet" href="<?= base_url('style.css') ?>">
+</head>
+<body>
+    <h1>Ajouter une personne</h1>
+    <form id="ajoutPersonneForm" method="post" action="<?= route_to('personnes.store') ?>" enctype="multipart/form-data">
+        <label>Nom :</label>
+        <input type="text" name="nom" required><br>
+
+        <label>Prénom :</label>
+        <input type="text" name="prenom" required><br>
+
+        <label>Sexe :</label>
+        <select name="sexe" required>
+            <option value="M">Masculin</option>
+            <option value="F">Féminin</option>
+        </select><br>
+
+        <label>Type de personne :</label>
+        <select name="type_personne" id="type_personne" required>
+            <?php foreach($typesPersonnes as $typePersonne): ?>
+                <option value="<?= $typePersonne['id'] ?>"><?= $typePersonne['libelle'] ?></option>
+            <?php endforeach; ?>
+        </select><br>
+
+        <label>Date de naissance :</label>
+        <input type="date" name="date_naissance" required><br>
+
+        <div id="photoField" style="display: none;">
+            <label>Photo :</label>
+            <input type="file" name="photo"><br>
+        </div>
+
+        <input class="btn-submit" type="submit" value="VALIDER">
+    </form>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $("#type_personne").change(function() {
+                var selectedType = $(this).val();
+                var photoField = $("#photoField");
+                if (selectedType === "2") { // 2 corresponds to the type "enseignant"
+                    photoField.show();
+                } else {
+                    photoField.hide();
+                }
+            });
+
+            // AJAX pour l'envoi du formulaire
+            $("#ajoutPersonneForm").submit(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: $(this).attr('action'),
+                    data: new FormData(this),
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function(response) {
+                        console.log(response);
+                        // Ajoutez ici la logique pour traiter la réponse AJAX
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
