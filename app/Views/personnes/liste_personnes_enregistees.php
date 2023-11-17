@@ -9,7 +9,7 @@
   <!-- View: liste_personnes_enregistrees.php --> 
  
 
-  <a href=" " class="btn-add">Enregistrer une personne</a>
+<a href=" <?php echo base_url('/testlagama/enregistrer-une-personne'); ?>" class="btn-add">Enregistrer une personne</a>
 
 
   <h1>Liste des personnes enregistrées</h1>
@@ -37,6 +37,9 @@
                   <td><img src="<?php echo base_url('/testlagama/public/photos/' . $personne->photo) ?>" width="100" height="100"></td>
                   
                   <td>
+                      <a class="supprimer-personne edit-btn" id-personne="<?= $personne->id ?>">Edit</a>
+                  </td>
+                  <td>
                       <a class="supprimer-personne delete-btn" id-personne="<?= $personne->id ?>">Supprimer</a>
                   </td>
               </tr>
@@ -49,6 +52,39 @@
 
     <script>
         $(document).ready(function () {
+
+            // Ajax edit 
+
+            $('.edit-btn').on('click', function () {
+
+                var idPersonne = $(this).attr('id-personne');
+                
+               // console.log(idPersonne);  // Pour le débogage
+
+                    $.ajax({
+                        url: '<?php echo base_url('/testlagama/edit-personne'); ?>',
+                        type: 'post',
+                        data: {id: idPersonne},
+                        dataType: 'json',  // Indique le type de données attendu dans la réponse
+                        success: function (response) {
+                            console.log(response);  // Pour le débogage
+                            if (response.success) {
+                                
+                            } else {
+                                
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText); // Affiche la réponse complète dans la console
+                            alert('Erreur lors de la communication avec le serveur');
+                        }
+                    });
+                
+            });
+
+
+          // Ajax Delete 
+
             $('.delete-btn').on('click', function () {
                 var idPersonne = $(this).attr('id-personne');
                 

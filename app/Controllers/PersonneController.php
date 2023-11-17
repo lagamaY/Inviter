@@ -79,6 +79,7 @@ public function store()
 
         // Load the view with the list of persons
         return view('personnes/liste_personnes_enregistees', ['personnes' => $personnes]);
+
     } } catch (\Exception $e) {
         
         log_message('error', $e->getMessage());
@@ -95,6 +96,28 @@ public function store()
 }
 
 
+// Affichage d'une personne pour modifier ces données
+
+public function editPersonne()
+{
+    $personne = new Personne();
+
+    // Vérifiez si la clé 'id' existe dans la requête
+    if ($this->request->getPost('id')) {
+        $id = $this->request->getPost('id');
+
+        // Ajoutez une condition WHERE pour spécifier l'ID à supprimer
+        $personne->where('id', $id)->get();
+
+        return view('personnes/edit_personne_enregistree', ['personne' => $personne ]);
+
+        // Pour le débogage - echo s'affiche dans la console
+        echo json_encode(['success' => true, 'message' => 'Personne retrouvée avec succès']);
+    } else {
+        // Gérez le cas où 'id' n'est pas défini, par exemple, en renvoyant une erreur.
+        echo json_encode(['success' => false, 'message' => 'ID not provided']);
+    }
+}
 
 
 
