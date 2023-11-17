@@ -9,16 +9,15 @@ use App\Models\TypePersonne;
 
 class PersonneController extends BaseController
 {
-    public function __construct()
-	{
-		helper(['url']);
-	}
-
+    
+// Affichage de la liste des personnes enregistrées
 
     public function getIndex()
     { 
         
         $personne = new Personne();
+
+        $typesPersonne = new TypePersonne();
 
         // Récupérer toutes les personnes
         $personnes = $personne->findAll();
@@ -27,12 +26,15 @@ class PersonneController extends BaseController
          $typesPersonne = $typesPersonne->findAll();
 
          // Charger la vue avec les données récupérées
+        //  return view('personnes/liste_personnes_enregistees');
          
          return view('personnes/liste_personnes_enregistees', ['personnes' => $personnes, 'typesPersonne' => $typesPersonne ]);
     }
 
 
-// Affichage du formualire d'enregistrement
+
+
+// Affichage du formualire d'enregistrement d'une personne
  
     public function getRegisterForm()
     { 
@@ -47,33 +49,40 @@ class PersonneController extends BaseController
     }
 
 
-// Enregistrement des données dans la bd
 
-    public function store()
-	{
-		if ($this->request->getMethod() == "post") {
 
-		
+// Stockage des données dans la bd
 
-				$personne = new Personne();
+public function store()
+{
+    if ($this->request->getMethod() == "post") {
+        $personne = new Personne();
 
-				$data = [
-					"idtypepersonne" => $this->request->getVar("type_personne"),
-					"nom" => $this->request->getVar("nom"),
-					"prenom" => $this->request->getVar("prenom"),
-                    "sexe" => $this->request->getVar("sexe"),
-                    "datenaissance" => $this->request->getVar("date_naissance"),
-				];
+        $data = [
+            "idtypepersonne" => $this->request->getVar("type_personne"),
+            "nom" => $this->request->getVar("nom"),
+            "prenom" => $this->request->getVar("prenom"),
+            "sexe" => $this->request->getVar("sexe"),
+            "datenaissance" => $this->request->getVar("date_naissance"),
+        ];
 
-				$personne->insert($data);
-					
-               
-                return redirect()->route('index');
-                
-				
-			
-		}
-	}
+        // Ajoutez la gestion de l'image ici
+        if ($this->request->getFile('photo')) {
+            $photo = $this->request->getFile('photo');
+            $photoName = time() . '.' . $photo->getClientExtension();
+            $photo->move(ROOTPATH . 'public/photos', $photoName);
+            $data['photo'] = $photoName;
+        } else {
+            // Définissez une valeur par défaut si aucune image n'est téléchargée
+            $data['photo'] = 'etudiant_photo';
+        }
+
+        $personne->insert($data);
+
+        return view('personnes/liste_personnes_enregistees');
+    }
+}
+
 }
 
 

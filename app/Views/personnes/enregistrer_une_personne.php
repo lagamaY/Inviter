@@ -69,8 +69,7 @@
                 processData: false,
                 success:function(data) {
                     if (data.status === 'success') {
-                        // Redirection vers la page d'index ou toute autre action nécessaire
-                        // window.location.href = '<?= route_to('index') ?>';
+                        
                     } else {
                         // Afficher un message d'erreur
                         alert('Erreur : ' + data.message);
