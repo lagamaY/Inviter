@@ -76,11 +76,9 @@ public function store()
             $personne = new Personne();
             $personne->insert($data);
 
-            // Récupère toutes les personnes de la base de données
-            $personnes = $personne->findAll();
-
-            // Charge la vue avec la liste des personnes
-            return view('personnes/liste_personnes_enregistees', ['personnes' => $personnes]);
+          
+            // Redirection vers la route nommée 'accueil'
+            return redirect()->to(route_to('accueil'));
 
         }
     } catch (\Exception $e) {
@@ -100,7 +98,8 @@ public function store()
 
 
 
-// Affichage d'une personne pour modifier ces données
+
+// Affichage du formulaire avec les données de la personne souhaitant modifier ces informations
 
 public function editPersonne()
 {
@@ -108,25 +107,26 @@ public function editPersonne()
 
     // Vérifiez si la clé 'id' existe dans la requête
     if ($this->request->getPost('id')) {
+        
         $id = $this->request->getPost('id');
 
-        // Ajoutez une condition WHERE pour spécifier l'ID à supprimer
-        $personne->where('id', $id)->get();
+        $personne = $personne->find($id);
 
         $typesPersonne = new TypePersonne();
 
-        // Récupérer les types de personnes
+        // Récupère tous les types de personnes
         $typesPersonne = $typesPersonne->findAll();
-
-        return view('personnes/edit_personne_enregistree', ['personne' => $personne , 'typesPersonne' => $typesPersonne]);
-
-      
-       
-         
         
+        
+        $html = view('personnes/edit_personne_enregistree', ['personne' => $personne, 'typesPersonne' => $typesPersonne]);
+
 
         // Pour le débogage - echo s'affiche dans la console
-        echo json_encode(['success' => true, 'message' => 'Personne retrouvée avec succès']);
+        // echo json_encode(['success' => true, $personne]);
+
+        return $this->response->setJSON(['success' => true, 'html' => $html]);
+        
+
     } else {
         // Gérez le cas où 'id' n'est pas défini, par exemple, en renvoyant une erreur.
         echo json_encode(['success' => false, 'message' => 'ID not provided']);

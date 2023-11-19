@@ -1,47 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
-</head>
-<body>
-  <!-- View: liste_personnes_enregistrees.php -->
-
-  <?php echo base_url('/testlagama/supprimer-personne'); ?>
-
-  <a href=" <?php echo base_url('/testlagama/enregistrer-une-personne'); ?>" class="btn-add">Enregistrer une personne</a>
-
-
-  <h1>Liste des personnes enregistrées</h1>
-  <table>
-      <thead>
-          <tr>
-              <th>Nom</th>
-              <th>Prénom</th>
-              <th>Type de personne</th>
-              <th>Sexe</th>
-              <th>Date de naissance</th>
-              <th>Photo</th>
-              <th>Action</th>
-          </tr>
-      </thead>
-      <tbody>
-          <?php foreach ($personnes as $personne) : ?>
-              <tr id="personne-<?= $personne->id ?>">
-                  <td><?= $personne->nom ?></td>
-                  <td><?= $personne->prenom ?></td>
-                  <td><?= $personne->typepersonne->libelle ?></td>
-                  <td><?= $personne->sexe ?></td>
-                  <td><?= $personne->datenaissance ?></td>
-                  <td><img src="<?= base_url('photos/' . $personne->photo) ?>" width="100" height="100"></td>
-                  <td>
-                      <a class="supprimer-personne delete-btn" id-personne="<?= $personne->id ?>">Supprimer</a>
-                  </td>
-              </tr>
-          <?php endforeach; ?>
-      </tbody>
-  </table>
-
-</body>
-</html>
+<select name="type_personne" id="type_personne" required>
+   <?php foreach ($typesPersonne as $type): ?>
+      <option value="<?= $type->id ?>" <?= ($personne->type_personne == $type->id) ? 'selected' : '' ?>>
+         <?= $type->libelle ?>
+      </option>
+   <?php endforeach; ?>
+</select><br>

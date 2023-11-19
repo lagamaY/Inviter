@@ -35,13 +35,14 @@
 
         <div id="photoField" style="display: none;">
             <label>Photo :</label>
-            <input type="file" name="photo" ><br>
+            <input type="file" name="photo"><br>
         </div>
 
         <input class="btn-submit" type="submit" id="btn-job-submit" value="VALIDER">
     </form>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
     <script>
         $(document).ready(function() {
             // Affichage de la photo quand Professeur est selectionné
