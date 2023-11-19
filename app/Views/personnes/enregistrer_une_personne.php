@@ -35,7 +35,7 @@
 
         <div id="photoField" style="display: none;">
             <label>Photo :</label>
-            <input type="file" name="photo"><br>
+            <input type="file" name="photo" ><br>
         </div>
 
         <input class="btn-submit" type="submit" id="btn-job-submit" value="VALIDER">

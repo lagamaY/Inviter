@@ -49,51 +49,55 @@ class PersonneController extends BaseController
 public function store()
 {
     try {
-         if ($this->request->getMethod() == 'post') {
-        $data = [
-            'idtypepersonne' => $this->request->getVar('type_personne'),
-            'nom' => $this->request->getVar('nom'),
-            'prenom' => $this->request->getVar('prenom'),
-            'sexe' => $this->request->getVar('sexe'),
-            'datenaissance' => $this->request->getVar('date_naissance'),
-        ];
+        // Vérifie si la méthode de la requête est 'post'
+        if ($this->request->getMethod() == 'post') {
+            // Récupère les données du formulaire
+            $data = [
+                'idtypepersonne' => $this->request->getVar('type_personne'),
+                'nom' => $this->request->getVar('nom'),
+                'prenom' => $this->request->getVar('prenom'),
+                'sexe' => $this->request->getVar('sexe'),
+                'datenaissance' => $this->request->getVar('date_naissance'),
+            ];
 
-        // Add image handling here
-        if ($this->request->getFile('photo')) {
-            $photo = $this->request->getFile('photo');
-            $photoName = time() . '.' . $photo->getClientExtension();
-            $photo->move(ROOTPATH . 'public/photos', $photoName);
-            $data['photo'] = $photoName;
-        } else {
-            // Set a default value if no image is uploaded
-            $data['photo'] = 'etudiant_photo';
+            // Ajoutez cette condition avant le traitement du fichier
+            if (!empty($_FILES['photo']['name'])) {
+                // Traitement de l'image
+                $photo = $this->request->getFile('photo');
+                $photoName = time() . '.' . $photo->getClientExtension();
+                $photo->move(ROOTPATH . 'public/photos', $photoName);
+                $data['photo'] = $photoName;
+            } else {
+                // Définit une valeur par défaut si aucune image n'est téléchargée
+                $data['photo'] = 'etudiant_photo';
+            }
+
+            // Crée une nouvelle instance du modèle Personne et insère les données
+            $personne = new Personne();
+            $personne->insert($data);
+
+            // Récupère toutes les personnes de la base de données
+            $personnes = $personne->findAll();
+
+            // Charge la vue avec la liste des personnes
+            return view('personnes/liste_personnes_enregistees', ['personnes' => $personnes]);
+
         }
-
-        // Create a new instance of the Personne model and insert data
-        $personne = new Personne();
-        $personne->insert($data);
-
-        // Fetch all persons from the database
-        $personnes = $personne->findAll();
-        
-
-        // Load the view with the list of persons
-        return view('personnes/liste_personnes_enregistees', ['personnes' => $personnes]);
-
-    } } catch (\Exception $e) {
-        
+    } catch (\Exception $e) {
+        // En cas d'erreur, enregistre le message d'erreur
         log_message('error', $e->getMessage());
 
+        // Crée une nouvelle instance du modèle TypePersonne
         $typesPersonne = new TypePersonne();
 
-        // Récupérer les types de personnes
+        // Récupère tous les types de personnes
         $typesPersonne = $typesPersonne->findAll();
-         // Charger la vue avec les données récupérées
-         
-         
-         return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
+        
+        // Charge la vue avec les données récupérées
+        return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
     }
 }
+
 
 
 // Affichage d'une personne pour modifier ces données
@@ -109,7 +113,17 @@ public function editPersonne()
         // Ajoutez une condition WHERE pour spécifier l'ID à supprimer
         $personne->where('id', $id)->get();
 
-        return view('personnes/edit_personne_enregistree', ['personne' => $personne ]);
+        $typesPersonne = new TypePersonne();
+
+        // Récupérer les types de personnes
+        $typesPersonne = $typesPersonne->findAll();
+
+        return view('personnes/edit_personne_enregistree', ['personne' => $personne , 'typesPersonne' => $typesPersonne]);
+
+      
+       
+         
+        
 
         // Pour le débogage - echo s'affiche dans la console
         echo json_encode(['success' => true, 'message' => 'Personne retrouvée avec succès']);
