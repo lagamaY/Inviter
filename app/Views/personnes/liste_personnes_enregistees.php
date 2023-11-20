@@ -38,13 +38,13 @@
                   <td id-personne="<?= $personne->id ?>">Type de personne</td>
                   <td id-personne="<?= $personne->id ?>"><?= $personne->sexe ?></td>
                   <td id-personne="<?= $personne->id ?>"><?= $personne->datenaissance ?></td>
-                  
-                  <td id-personne="<?= $personne->id ?>" ><img src="<?php echo base_url('/public/photos/' . $personne->photo) ?>" width="100" height="100"></td>
+                 <td id-personne="<?= $personne->id ?>" ><img src="<?php echo base_url('/public/photos/' . $personne->photo) ?>" width="100" height="100"></td>
                   
                   <td>
                       <a class="edit-btn" id-personne="<?= $personne->id ?>">Modifier</a>
                       <a class="supprimer-personne delete-btn" id-personne="<?= $personne->id ?>">Supprimer</a>
                   </td>
+                 
                  
               </tr>
           <?php endforeach; ?>
@@ -52,7 +52,6 @@
   </table>
    
 
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>

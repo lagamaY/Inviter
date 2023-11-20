@@ -18,6 +18,10 @@ $routes->post('/update-personne', 'PersonneController::updatePersonne');
 
 $routes->post('/supprimer-personne', 'PersonneController::supprimerPersonne', ['as' => 'personnes.delete']);
 
-
-
 $routes->get('/liste-personnes', 'PersonneController::getListePersonnesAJour', ['as' => 'liste-personnes-apres-une-mise-a-jour']);
+
+
+
+
+
+

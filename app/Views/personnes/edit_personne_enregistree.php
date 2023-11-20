@@ -16,9 +16,11 @@
 
         <label for="edit-nom">Nom :</label>
         <input type="text" name="nom" value="<?= $personne->nom ?>" id="edit-nom" required><br>
+        <input type="hidden" id="edit-id" name="id" />
 
         <label for="edit-prenom">Prénom :</label>
         <input type="text" name="prenom" value="<?= $personne->prenom ?>" id="edit-prenom" required><br>
+
 
         <label for="edit-sexe">Sexe :</label>
         <select name="sexe" id="edit-sexe" required>
@@ -26,6 +28,7 @@
             <option value="F" <?= ($personne->sexe === 'F') ? 'selected' : '' ?>>Féminin</option>
         </select><br>
 
+       
         <label for="type_personne">Type de personne :</label>
         <select name="type_personne" id="type_personne" required>
             <?php foreach ($typesPersonne as $type): ?>
@@ -43,7 +46,11 @@
         <div id="photoField" style="display: none;">
             <label for="edit-photo">Photo :</label>
             <input type="file" name="photo" id="edit-photo"><br>
+            <label for="edit-photo">Photo :</label>
+            <input type="file" name="photo" id="edit-photo"><br>
         </div>
+
+
 
         <button type="submit" class="btn-update" id-personne="<?= $personne->id ?>">Mettre à jour</button>
 
@@ -55,6 +62,9 @@
     
     <script>
         $(document).ready(function() {
+
+
+            // Affichage de la photo quand Enseignant est selectionné
 
 
             // Affichage de la photo quand Enseignant est selectionné
