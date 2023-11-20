@@ -7,16 +7,15 @@
 </head>
 <body>
     
-    <form id="formulaire-modification" >
+    <form id="formulaire-modification" enctype="multipart/form-data" >
     
     <h1>Modifier une personne</h1>
         <?= csrf_field() ?>
 
-        <input type="hidden" id="edit-id" name="id" />
+        <input type="hidden" id="edit-id" name="id"  />
 
         <label for="edit-nom">Nom :</label>
         <input type="text" name="nom" value="<?= $personne->nom ?>" id="edit-nom" required><br>
-        <input type="hidden" id="edit-id" name="id" />
 
         <label for="edit-prenom">Prénom :</label>
         <input type="text" name="prenom" value="<?= $personne->prenom ?>" id="edit-prenom" required><br>
@@ -46,10 +45,7 @@
         <div id="photoField" style="display: none;">
             <label for="edit-photo">Photo :</label>
             <input type="file" name="photo" id="edit-photo"><br>
-            <label for="edit-photo">Photo :</label>
-            <input type="file" name="photo" id="edit-photo"><br>
         </div>
-
 
 
         <button type="submit" class="btn-update" id-personne="<?= $personne->id ?>">Mettre à jour</button>
@@ -85,53 +81,43 @@
           // Ajax Update
 
           $('.btn-update').on('click', function () {
-                 var idPersonne = $(this).attr('id-personne');
-                // var idPersonne = $('#edit-id').val();
-                var nom = $('#edit-nom').val();
-                var prenom = $('#edit-prenom').val();
-                var sexe = $('#edit-sexe').val();
-                var typePersonne = $('#type_personne').val();
-                var dateNaissance = $('#edit-date-naissance').val();
-                var photo = $('#edit-photo').val();
-                
-                 console.log(idPersonne);  // Pour le débogage
 
-                    $.ajax({
-                        url: '<?php echo base_url('/update-personne'); ?>',
-                        type: 'post',
-                        data: {
-                        id: idPersonne,
-                        nom: nom,
-                        prenom: prenom,
-                        sexe: sexe,
-                        type_personne: typePersonne,
-                        date_naissance: dateNaissance,
-                        photo: photo,
-                    
-                        },
-                        dataType: 'json',  
-                        success: function (response) {
-                           
-                            if (response.success) {
+            var idPersonne = $(this).attr('id-personne');
 
-                                // Rechargez la page pour afficher la liste mise à jour des personnes
-                                 window.location.reload();
+            $('#edit-id').val(idPersonne);
+            
+            var formData = new FormData($('#formulaire-modification')[0]);
 
-                                //  alert('Personne mise à jour avec succès');        
+            // console.log("Données envoyées au serveur :");
 
-                            } else {
-                                // console.log(response);
-                                alert('Échec de la mise à jour de la personne');
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            // console.log(idPersonne);
-                            console.error(xhr.responseText); // Affiche la réponse complète dans la console
-                            alert('Erreur lors de la communication avec le serveur');
-                        }
-                    });
-                
+            // for (var pair of formData.entries()) {
+            //     console.log(pair[0] + ', ' + pair[1]);
+            // }
+
+            // debugger;
+            $.ajax({
+                url: '<?php echo base_url('/update-personne'); ?>',
+                type: 'post',
+                data: formData,
+                dataType: 'JSON',
+                contentType: false,
+                cache: false,
+                processData: false,
+                success: function (data) {
+                    if (data.status === 'success') {
+ 
+                        window.location.reload();
+                    } else {
+                        alert('Échec de la mise à jour de la personne');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                    alert('Erreur lors de la communication avec le serveur');
+                }
             });
+        });
+
 
     </script>
 </body>

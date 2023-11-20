@@ -135,17 +135,6 @@ public function editPersonne()
 
 
 
-// Cette page s'affiche après la mise à jour d'une personne
-public function getListePersonnesAJour()
-{
-    // Récupérez la liste mise à jour des personnes depuis la base de données
-    $personnes = $this->personne->findAll(); // Assurez-vous d'adapter cela à votre modèle de personne
-
-    // Chargez la vue correspondante avec les nouvelles données
-    return view('personnes/liste_personnes_mis_a_jour', ['personnes' => $personnes]);
-}
-
-
 // Mise à jour des données de la personne dans la BD.
 
 public function updatePersonne()
@@ -170,26 +159,31 @@ public function updatePersonne()
                 'datenaissance' => $this->request->getVar('date_naissance'),
             ];
     
-            // !empty($_FILES['photo']['name']) vérifie si l'input de type file a été soumis
             if (!empty($_FILES['photo']['name'])) {
-                // Traitement de l'image
                 $photo = $this->request->getFile('photo');
-                $photoName = time() . '.' . $photo->getClientExtension();
-                $photo->move(ROOTPATH . 'public/photosUpdate', $photoName);
-                $data['photo'] = $photoName;
+            
+                if ($photo->isValid() && !$photo->hasMoved()) {
+                    $photoName = time() . '.' . $photo->getClientExtension();
+                    $photo->move(ROOTPATH . 'public/photos', $photoName);
+                    $data['photo'] = $photoName;
+                } else {
+                    // Gestion d'erreur si le fichier n'est pas valide ou ne peut pas être déplacé
+                    echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la manipulation du fichier']);
+                    return;
+                }
             } else {
                 // Définit une valeur par défaut si aucune image n'est téléchargée
                 $data['photo'] = 'etudiant_photo';
             }
+            
     
                 // Crée une nouvelle instance du modèle Personne et insère les données
                 
                 $personne->update($id, $data);
 
                 // Redirection vers la nouvelle vue de liste après la mise à jour
-                return redirect()->to(route_to('liste-personnes-apres-une-mise-a-jour'));
-                
-    
+                // return redirect()->to(route_to('liste-personnes-apres-une-mise-a-jour'));
+
     
             // Pour le débogage - echo s'affiche dans la console
             //  echo json_encode(['success' => true, $personne]);
