@@ -18,7 +18,7 @@ class App extends BaseConfig
      */
      public string $baseURL = 'http://localhost/testlagama';
 
-    
+    // public $baseURL = BASE;
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.

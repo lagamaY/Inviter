@@ -33,20 +33,19 @@
       <tbody>
           <?php foreach ($personnes as $personne) : ?>
               <tr id="personne-<?= $personne->id ?>">
-                  <td><?= $personne->nom ?></td>
-                  <td><?= $personne->prenom ?></td>
-                  <td><?= $personne->photo ?></td>
-                  <td><?= $personne->sexe ?></td>
-                  <td><?= $personne->datenaissance ?></td>
+                  <td id-personne="<?= $personne->id ?>"><?= $personne->nom ?></td>
+                  <td id-personne="<?= $personne->id ?>"><?= $personne->prenom ?></td>
+                  <td id-personne="<?= $personne->id ?>">Type de personne</td>
+                  <td id-personne="<?= $personne->id ?>"><?= $personne->sexe ?></td>
+                  <td id-personne="<?= $personne->id ?>"><?= $personne->datenaissance ?></td>
                   
-                  <td><img src="<?php echo base_url('/public/photos/' . $personne->photo) ?>" width="100" height="100"></td>
+                  <td id-personne="<?= $personne->id ?>" ><img src="<?php echo base_url('/public/photos/' . $personne->photo) ?>" width="100" height="100"></td>
                   
                   <td>
                       <a class="edit-btn" id-personne="<?= $personne->id ?>">Modifier</a>
-                  </td>
-                  <td>
                       <a class="supprimer-personne delete-btn" id-personne="<?= $personne->id ?>">Supprimer</a>
                   </td>
+                 
               </tr>
           <?php endforeach; ?>
       </tbody>
@@ -54,81 +53,76 @@
    
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script>
-        $(document).ready(function () {
+<script>
+    $(document).ready(function () {
 
-            // Ajax edit 
-             $('.edit-btn').on('click', function () {
+        // Ajax edit 
+         $('.edit-btn').on('click', function () {
+        var idPersonne = $(this).attr('id-personne');
+        // console.log(idPersonne);
+        $.ajax({
+            url: '<?php echo base_url('/edit-personne'); ?>',
+            type: 'post',
+            data: { id: idPersonne },
+            dataType: 'json',
+            success: function (response) {
+                // console.log(response);
+                if (response.success) {
+
+                    $('body').html(response.html);
+                   
+                } else {
+                     console.log(response);
+                    alert('Échec de la récupération des données');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(xhr.responseText);
+                alert('Erreur lors de la communication avec le serveur');
+            }
+        });
+    });
+
+
+      // Ajax Delete 
+
+        $('.delete-btn').on('click', function () {
             var idPersonne = $(this).attr('id-personne');
-            // console.log(idPersonne);
-            $.ajax({
-                url: '<?php echo base_url('/edit-personne'); ?>',
-                type: 'post',
-                data: { id: idPersonne },
-                dataType: 'json',
-                success: function (response) {
-                    // console.log(response);
-                    if (response.success) {
+            
+            // console.log(idPersonne);  // Pour le débogage
 
-                        $('body').html(response.html);
-
-                         // Affichez le formulaire de modification
-                        //  $('#formulaire-modification').show();
-                       
-                    } else {
-                         console.log(response);
-                        alert('Échec de la récupération des données');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                    alert('Erreur lors de la communication avec le serveur');
-                }
-            });
-        });
-
-
-
-
-
-
-          // Ajax Delete 
-
-            $('.delete-btn').on('click', function () {
-                var idPersonne = $(this).attr('id-personne');
-                
-                console.log(idPersonne);  // Pour le débogage
-
-                if (confirm("Êtes-vous sûr de vouloir supprimer cette personne?")) {
-                    $.ajax({
-                        url: '<?php echo base_url('/supprimer-personne'); ?>',
-                        type: 'post',
-                        data: {id: idPersonne},
-                        dataType: 'json',  // Indique le type de données attendu dans la réponse
-                        success: function (response) {
-                            console.log(response);  // Pour le débogage
-                            if (response.success) {
-                                $('#personne-' + idPersonne).remove();
-                            } else {
-                                alert('Erreur lors de la suppression : ' + response.message);
-                            }
-                        },
-                        error: function (xhr, status, error) {
-                            console.error(xhr.responseText); // Affiche la réponse complète dans la console
-                            alert('Erreur lors de la communication avec le serveur');
+            if (confirm("Êtes-vous sûr de vouloir supprimer cette personne?")) {
+                $.ajax({
+                    url: '<?php echo base_url('/supprimer-personne'); ?>',
+                    type: 'post',
+                    data: {id: idPersonne},
+                    dataType: 'json',  // Indique le type de données attendu dans la réponse
+                    success: function (response) {
+                        console.log(response);  // Pour le débogage
+                        if (response.success) {
+                            $('#personne-' + idPersonne).remove();
+                        } else {
+                            alert('Erreur lors de la suppression : ' + response.message);
                         }
-                    });
-                }
-            });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText); // Affiche la réponse complète dans la console
+                        alert('Erreur lors de la communication avec le serveur');
+                    }
+                });
+            }
         });
-    </script>
+    });
+</script>
 
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
 
 </body>
