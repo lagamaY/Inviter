@@ -12,19 +12,21 @@
     <h1>Modifier une personne</h1>
         <?= csrf_field() ?>
 
-        <label>Nom :</label>
-        <input type="text" name="nom" value="<?= $personne->nom ?>" required><br>
+        <input type="hidden" id="edit-id" name="id" />
 
-        <label>Prénom :</label>
-        <input type="text" name="prenom" value="<?= $personne->prenom ?>" required><br>
+        <label for="edit-nom">Nom :</label>
+        <input type="text" name="nom" value="<?= $personne->nom ?>" id="edit-nom" required><br>
 
-        <label>Sexe :</label>
-        <select name="sexe" required>
+        <label for="edit-prenom">Prénom :</label>
+        <input type="text" name="prenom" value="<?= $personne->prenom ?>" id="edit-prenom" required><br>
+
+        <label for="edit-sexe">Sexe :</label>
+        <select name="sexe" id="edit-sexe" required>
             <option value="M" <?= ($personne->sexe === 'M') ? 'selected' : '' ?>>Masculin</option>
             <option value="F" <?= ($personne->sexe === 'F') ? 'selected' : '' ?>>Féminin</option>
         </select><br>
 
-        <label>Type de personne :</label>
+        <label for="type_personne">Type de personne :</label>
         <select name="type_personne" id="type_personne" required>
             <?php foreach ($typesPersonne as $type): ?>
                 <option value="<?= $type->id ?>" >
@@ -34,15 +36,18 @@
         </select><br>
 
 
-        <label>Date de naissance :</label>
-        <input type="date" name="date_naissance" value="<?= $personne->datenaissance?>" required><br>
+        <label for="edit-date-naissance">Date de naissance :</label>
+        <input type="date" name="date_naissance" value="<?= $personne->datenaissance?>" id="edit-date-naissance"  required><br>
+
 
         <div id="photoField" style="display: none;">
-            <label>Photo :</label>
-            <input type="file" name="photo"><br>
+            <label for="edit-photo">Photo :</label>
+            <input type="file" name="photo" id="edit-photo"><br>
         </div>
 
-        <button type="button" id="btn-update">Mettre à jour</button>
+        <button type="submit" class="btn-update" id-personne="<?= $personne->id ?>">Mettre à jour</button>
+
+
     </form>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -50,7 +55,9 @@
     
     <script>
         $(document).ready(function() {
-            // Affichage de la photo quand Professeur est selectionné
+
+
+            // Affichage de la photo quand Enseignant est selectionné
             $("#type_personne").change(function() {
                 var selectedType = $(this).val();
                 var photoField = $("#photoField");
@@ -61,34 +68,61 @@
                 }
             });
 
-
-            // Envoie des données du formulaire à la route Post
-            $('#btn-job-submit').on('submit', function(event){
-            event.preventDefault();
-            $.ajax({
-                url:'<?= route_to('personnes.store') ?>',
-                method:"POST",
-                data:new FormData(this),
-                dataType:'JSON',
-                contentType: false,
-                cache: false,
-                processData: false,
-                success:function(data) {
-                    if (data.status === 'success') {
-                        
-                    } else {
-                        // Afficher un message d'erreur
-                        alert('Erreur : ' + data.message);
-                    }
-                },
-                
-            error: function () {
-                console.error('Une erreur s\'est produite lors de la requête AJAX.');
-            }
-                })
-            })
-
         });
+
+
+        
+          // Ajax Update
+
+          $('.btn-update').on('click', function () {
+                 var idPersonne = $(this).attr('id-personne');
+                // var idPersonne = $('#edit-id').val();
+                var nom = $('#edit-nom').val();
+                var prenom = $('#edit-prenom').val();
+                var sexe = $('#edit-sexe').val();
+                var typePersonne = $('#type_personne').val();
+                var dateNaissance = $('#edit-date-naissance').val();
+                var photo = $('#edit-photo').val();
+                
+                 console.log(idPersonne);  // Pour le débogage
+
+                    $.ajax({
+                        url: '<?php echo base_url('/update-personne'); ?>',
+                        type: 'post',
+                        data: {
+                        id: idPersonne,
+                        nom: nom,
+                        prenom: prenom,
+                        sexe: sexe,
+                        type_personne: typePersonne,
+                        date_naissance: dateNaissance,
+                        photo: photo,
+                    
+                        },
+                        dataType: 'json',  
+                        success: function (response) {
+                           
+                            if (response.success) {
+
+                                // Rechargez la page pour afficher la liste mise à jour des personnes
+                                 window.location.reload();
+
+                                //  alert('Personne mise à jour avec succès');
+                                
+
+                            } else {
+                                // console.log(response);
+                                alert('Échec de la mise à jour de la personne');
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText); // Affiche la réponse complète dans la console
+                            alert('Erreur lors de la communication avec le serveur');
+                        }
+                    });
+                
+            });
+
     </script>
 </body>
 </html>

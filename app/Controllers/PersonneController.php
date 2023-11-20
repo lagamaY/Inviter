@@ -50,7 +50,7 @@ public function store()
 {
     try {
         // Vérifie si la méthode de la requête est 'post'
-        if ($this->request->getMethod() == 'post') {
+        if ($this->request->getMethod() == 'post') { 
             // Récupère les données du formulaire
             $data = [
                 'idtypepersonne' => $this->request->getVar('type_personne'),
@@ -132,6 +132,78 @@ public function editPersonne()
         echo json_encode(['success' => false, 'message' => 'ID not provided']);
     }
 }
+
+
+
+// Cette page s'affiche après la mise à jour d'une personne
+public function getListePersonnesAJour()
+{
+    // Récupérez la liste mise à jour des personnes depuis la base de données
+    $personnes = $this->personne->findAll(); // Assurez-vous d'adapter cela à votre modèle de personne
+
+    // Chargez la vue correspondante avec les nouvelles données
+    return view('personnes/liste_personnes_mis_a_jour', ['personnes' => $personnes]);
+}
+
+
+// Mise à jour des données de la personne dans la BD.
+
+public function updatePersonne()
+{
+    $personne = new Personne();
+
+    // Vérifiez si la clé 'id' existe dans la requête
+
+    if ($this->request->getPost('id')) {
+        
+        $id = $this->request->getPost('id');
+
+        $personneTrouve = $personne->find($id);
+
+        if($personneTrouve){
+
+            $data = [
+                'idtypepersonne' => $this->request->getVar('type_personne'),
+                'nom' => $this->request->getVar('nom'),
+                'prenom' => $this->request->getVar('prenom'),
+                'sexe' => $this->request->getVar('sexe'),
+                'datenaissance' => $this->request->getVar('date_naissance'),
+            ];
+    
+            // !empty($_FILES['photo']['name']) vérifie si l'input de type file a été soumis
+            if (!empty($_FILES['photo']['name'])) {
+                // Traitement de l'image
+                $photo = $this->request->getFile('photo');
+                $photoName = time() . '.' . $photo->getClientExtension();
+                $photo->move(ROOTPATH . 'public/photosUpdate', $photoName);
+                $data['photo'] = $photoName;
+            } else {
+                // Définit une valeur par défaut si aucune image n'est téléchargée
+                $data['photo'] = 'etudiant_photo';
+            }
+    
+                // Crée une nouvelle instance du modèle Personne et insère les données
+                
+                $personne->update($id, $data);
+
+                // Redirection vers la nouvelle vue de liste après la mise à jour
+                return redirect()->to(route_to('liste-personnes-apres-une-mise-a-jour'));
+                
+    
+    
+            // Pour le débogage - echo s'affiche dans la console
+            //  echo json_encode(['success' => true, $personne]);
+
+        }
+ 
+
+    } else {
+        // Gérez le cas où 'id' n'est pas défini, par exemple, en renvoyant une erreur.
+        echo json_encode(['success' => false, 'message' => 'ID non trouvé']);
+    }
+}
+
+
 
 
 
