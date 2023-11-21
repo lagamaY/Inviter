@@ -176,14 +176,9 @@ public function updatePersonne()
                 $data['photo'] = 'etudiant_photo';
             }
             
-    
                 // Crée une nouvelle instance du modèle Personne et insère les données
                 
                 $personne->update($id, $data);
-
-                // Redirection vers la nouvelle vue de liste après la mise à jour
-                // return redirect()->to(route_to('liste-personnes-apres-une-mise-a-jour'));
-
     
             // Pour le débogage - echo s'affiche dans la console
             //  echo json_encode(['success' => true, $personne]);

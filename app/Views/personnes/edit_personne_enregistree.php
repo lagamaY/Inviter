@@ -106,7 +106,12 @@
                 success: function (data) {
                     if (data.status === 'success') {
  
-                        window.location.reload();
+                        //  window.location.reload();
+
+                         window.location.href = '<?php echo base_url('/enregistrer-une-personne'); ?> ';
+
+                        //  console.log(window.location.href);
+
                     } else {
                         alert('Échec de la mise à jour de la personne');
                     }
