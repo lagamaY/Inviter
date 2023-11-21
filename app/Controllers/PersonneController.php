@@ -12,17 +12,17 @@ class PersonneController extends BaseController
     
 // Affichage de la liste des personnes enregistrées
 
-    public function getIndex()
-    { 
-        
-        $personne = new Personne();
+public function getIndex()
+{ 
+    $personne = new Personne();
+    
+    $personnes = $personne->getPersonnesWithTypePersonne();
 
+    // echo json_encode($personnes);
 
-        $personnes = $personne->findAll();
-      
-         
-         return view('personnes/liste_personnes_enregistees', ['personnes' => $personnes ]);
-    }
+    return view('personnes/liste_personnes_enregistees', ['personnes' => $personnes]);
+}
+
 
 
 
@@ -74,7 +74,6 @@ public function store()
 
             // Crée une nouvelle instance du modèle Personne et insère les données
             $personne = new Personne();
-
             $personne->insert($data);
 
           
@@ -181,8 +180,8 @@ public function updatePersonne()
                 
                 $personne->update($id, $data);
     
-                 // Redirection vers la route nommée 'accueil'
-                 return redirect()->to(route_to('personnes.create'));
+            // Pour le débogage - echo s'affiche dans la console
+            //  echo json_encode(['success' => true, $personne]);
 
         }
  

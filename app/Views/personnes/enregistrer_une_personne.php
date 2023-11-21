@@ -135,7 +135,6 @@
     
     <script>
         $(document).ready(function() {
-            
             // Affichage de la photo quand Professeur est selectionné
             $("#type_personne").change(function() {
                 var selectedType = $(this).val();
