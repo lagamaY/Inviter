@@ -29,8 +29,8 @@ class TypePersonne extends Model
      {
     
          $libelles = [
-             1 => 'etudiant',
-             2 => 'enseignant',
+             1 => 'Etudiant',
+             2 => 'Enseignant',
          ];
  
          return $libelles[$this->idtypepersonne] ?? 'Inconnu';

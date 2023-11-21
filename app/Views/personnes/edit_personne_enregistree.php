@@ -36,7 +36,7 @@
         }
 
         #photoField {
-            display: none;
+            
             margin-bottom: 20px;
         }
 
@@ -107,7 +107,7 @@
             <label for="type_personne">Type de personne :</label>
             <select name="type_personne" id="type_personne" required>
                 <?php foreach ($typesPersonne as $type): ?>
-                    <option value="<?= $type->id ?>" <?= ($type->libelle === $personne->libelleTypePersonne) ? 'selected' : '' ?>>
+                    <option value="<?= $type->id ?>" <?= ($type->libelle === $personne->libelleTypePersonne) ? 'selected' : '' ?> >
                         <?= $type->libelle ?>
                     </option>
                 <?php endforeach; ?>
@@ -120,9 +120,9 @@
 
 
 
-            <div id="photoField" style="display: none;">
+            <div id="photoField" <?php echo ($personne->photo === "etudiant_photo") ? 'style="display:none"' : ''; ?>>
                 <label for="edit-photo">Photo :</label>
-                <input type="file" name="photo" id="edit-photo"><br>
+                <input type="file" name="photo" id="edit-photo" value="<?= $personne->photo ?>" ><br>
             </div>
 
 
@@ -147,14 +147,21 @@
 
 
             $("#type_personne").change(function() {
+
                 var selectedType = $(this).val();
+
                 var photoField = $("#photoField");
-                if (selectedType === "2") { 
+
+                if (selectedType === "2" ){ 
+
                     photoField.show();
+
                 } else {
                     photoField.hide();
                 }
             });
+
+            
 
         });
 

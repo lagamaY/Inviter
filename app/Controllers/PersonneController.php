@@ -143,7 +143,7 @@ public function editPersonne()
 
 
         // Pour le débogage - echo s'affiche dans la console
-        // echo json_encode(['success' => true, $personne]);
+        // echo json_encode( $personne);
 
         return $this->response->setJSON(['success' => true, 'html' => $html]);
         
