@@ -41,21 +41,40 @@
             margin-bottom: 20px;
         }
 
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .btn-add {
+            
+            color: #007bff;
+            text-decoration: none;
+            display: inline-block;
+            padding-top: 10px;
+            
+        }
+
         .btn-submit {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 16px;
+            background-color: #28a745; /* Couleur verte Bootstrap */
+            color: #ffffff;
             border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
             cursor: pointer;
         }
 
         .btn-submit:hover {
-            background-color: #0056b3;
+            background-color: #218838; /* Couleur verte plus foncée au survol */
         }
+
         h1{
-            margin-top: 10px;
+            margin-top: 15px;
+            margin-bottom: 5px;
         }
+    
+
     </style>
 </head>
 <body>
@@ -102,7 +121,11 @@
             <input type="file" name="photo">
         </div>
 
-        <input class="btn-submit" type="submit" id="btn-job-submit" value="VALIDER">
+        <div class="btn-container">
+                <a href="<?php echo base_url('/'); ?>" class="btn-add">Déjà enregistré ? voir la liste.</a>
+                <input class="btn-submit" type="submit" id="btn-job-submit" value="VALIDER">
+        </div>
+
     </form>
 </div>
 

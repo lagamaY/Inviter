@@ -40,19 +40,35 @@
             margin-bottom: 20px;
         }
 
-        .btn-update {
-            background-color: #007bff;
-            color: #fff;
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            cursor: pointer;
 
+        .btn-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        .btn-add {
+            
+            color: #007bff;
+            text-decoration: none;
+            display: inline-block;
+            padding-top: 10px;
+            
+        }
+
+        .btn-update {
+            background-color: #28a745; /* Couleur verte Bootstrap */
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
         }
 
         .btn-update:hover {
-            background-color: #0056b3;
+            background-color: #218838; /* Couleur verte plus foncée au survol */
         }
+
         h1{
             margin-top: 15px;
             margin-bottom: 5px;
@@ -61,59 +77,62 @@
 </head>
 <body>
     
-<div class="container-fluid">
-    <header class="text-center">
-        <h1>Modifier une personne</h1>
-    </header>
-</div>
+    <div class="container-fluid">
+        <header class="text-center">
+            <h1>Modifier une personne</h1>
+        </header>
+    </div>
 
-<div class="container">
-    <form id="formulaire-modification" enctype="multipart/form-data" >
-    
-        <?= csrf_field() ?>
+    <div class="container">
+        <form id="formulaire-modification" enctype="multipart/form-data" >
+        
+            <?= csrf_field() ?>
 
-        <input type="hidden" id="edit-id" name="id"  />
+            <input type="hidden" id="edit-id" name="id"  />
 
-        <label for="edit-nom">Nom :</label>
-        <input type="text" name="nom" value="<?= $personne->nom ?>" id="edit-nom" required><br>
+            <label for="edit-nom">Nom :</label>
+            <input type="text" name="nom" value="<?= $personne->nom ?>" id="edit-nom" required><br>
 
-        <label for="edit-prenom">Prénom :</label>
-        <input type="text" name="prenom" value="<?= $personne->prenom ?>" id="edit-prenom" required><br>
-
-
-        <label for="edit-sexe">Sexe :</label>
-        <select name="sexe" id="edit-sexe" required>
-            <option value="M" <?= ($personne->sexe === 'M') ? 'selected' : '' ?>>Masculin</option>
-            <option value="F" <?= ($personne->sexe === 'F') ? 'selected' : '' ?>>Féminin</option>
-        </select><br>
-
-       
-        <label for="type_personne">Type de personne :</label>
-        <select name="type_personne" id="type_personne" required>
-            <?php foreach ($typesPersonne as $type): ?>
-                <option value="<?= $type->id ?>" >
-                    <?= $type->libelle ?>
-                </option>
-            <?php endforeach; ?>
-        </select><br>
+            <label for="edit-prenom">Prénom :</label>
+            <input type="text" name="prenom" value="<?= $personne->prenom ?>" id="edit-prenom" required><br>
 
 
-        <label for="edit-date-naissance">Date de naissance :</label>
-        <input type="date" name="date_naissance" value="<?= $personne->datenaissance?>" id="edit-date-naissance"  required><br>
+            <label for="edit-sexe">Sexe :</label>
+            <select name="sexe" id="edit-sexe" required>
+                <option value="M" <?= ($personne->sexe === 'M') ? 'selected' : '' ?>>Masculin</option>
+                <option value="F" <?= ($personne->sexe === 'F') ? 'selected' : '' ?>>Féminin</option>
+            </select><br>
+
+        
+            <label for="type_personne">Type de personne :</label>
+            <select name="type_personne" id="type_personne" required>
+                <?php foreach ($typesPersonne as $type): ?>
+                    <option value="<?= $type->id ?>" >
+                        <?= $type->libelle ?>
+                    </option>
+                <?php endforeach; ?>
+            </select><br>
 
 
-        <div id="photoField" style="display: none;">
-            <label for="edit-photo">Photo :</label>
-            <input type="file" name="photo" id="edit-photo"><br>
-        </div>
+            <label for="edit-date-naissance">Date de naissance :</label>
+            <input type="date" name="date_naissance" value="<?= $personne->datenaissance?>" id="edit-date-naissance"  required><br>
 
 
-        <button type="submit" class="btn-update" id-personne="<?= $personne->id ?>">Mettre à jour</button>
+            <div id="photoField" style="display: none;">
+                <label for="edit-photo">Photo :</label>
+                <input type="file" name="photo" id="edit-photo"><br>
+            </div>
 
 
-    </form>
-    
-</div>
+            <div class="btn-container">
+                <a href="<?php echo base_url('/'); ?>" class="btn-add">Déjà enregistré ? voir la liste.</a>
+                <button type="submit" class="btn-update" id-personne="<?= $personne->id ?>">Mettre à jour</button>
+            </div>
+
+
+        </form>
+        
+    </div>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
@@ -178,10 +197,10 @@
                         alert('Échec de la mise à jour de la personne');
                     }
                 },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                    alert('Erreur lors de la communication avec le serveur');
-                }
+                // error: function (xhr, status, error) {
+                //     console.error(xhr.responseText);
+                //     alert('Erreur lors de la communication avec le serveur');
+                // }
             });
         });
 
