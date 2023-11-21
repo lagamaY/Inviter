@@ -4,12 +4,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modifier une personne</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        /* Ajouter le style personnalisé ici */
+        body {
+            background-color: #fff;
+        }
+
+        .container {
+            margin-top: 30px;
+        }
+
+        #formulaire-modification {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        #photoField {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .btn-update {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+
+        }
+
+        .btn-update:hover {
+            background-color: #0056b3;
+        }
+        h1{
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
     
+<div class="container-fluid">
+    <header class="text-center">
+        <h1>Modifier une personne</h1>
+    </header>
+</div>
+
+<div class="container">
     <form id="formulaire-modification" enctype="multipart/form-data" >
     
-    <h1>Modifier une personne</h1>
         <?= csrf_field() ?>
 
         <input type="hidden" id="edit-id" name="id"  />
@@ -52,6 +112,8 @@
 
 
     </form>
+    
+</div>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 

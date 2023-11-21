@@ -4,42 +4,109 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ajouter une personne</title>
-    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <style>
+        /* Ajouter le style personnalisé ici */
+        body {
+            background-color: #fff;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        #ajoutPersonneForm {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        #photoField {
+            display: none;
+            margin-bottom: 20px;
+        }
+
+        .btn-submit {
+            background-color: #007bff;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover {
+            background-color: #0056b3;
+        }
+        h1{
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Ajouter une personne</h1>
-    <form id="ajoutPersonneForm" method="post" action=""  enctype="multipart/form-data">
-        <label>Nom :</label>
-        <input type="text" name="nom" required><br>
+   
+<div class="container-fluid">
+    <header class="text-center">
+        <h1>Enregistrez-vous !</h1>
+    </header>
+</div>
 
-        <label>Prénom :</label>
-        <input type="text" name="prenom" required><br>
+<div class="container">
+    <form id="ajoutPersonneForm" method="post" action="" enctype="multipart/form-data">
+        <div class="form-row">
+            <div class="col">
+                <label>Nom :</label>
+                <input type="text" name="nom" required>
+            </div>
+            <div class="col">
+                <label>Prénom :</label>
+                <input type="text" name="prenom" required>
+            </div>
+        </div>
 
         <label>Sexe :</label>
         <select name="sexe" required>
             <option value="M">Masculin</option>
             <option value="F">Féminin</option>
-        </select><br>
+        </select>
 
         <label>Type de personne :</label>
         <select name="type_personne" id="type_personne" required>
-            <?php foreach($typesPersonne as $typePersonne): ?>
-                <option value="<?= $typePersonne->id ?>"> 
-                        <?= $typePersonne->libelle  ?> 
+            <?php foreach ($typesPersonne as $typePersonne): ?>
+                <option value="<?= $typePersonne->id ?>">
+                    <?= $typePersonne->libelle ?>
                 </option>
             <?php endforeach; ?>
-        </select><br>
+        </select>
 
         <label>Date de naissance :</label>
-        <input type="date" name="date_naissance" required><br>
+        <input type="date" name="date_naissance" required>
 
-        <div id="photoField" style="display: none;">
+        <div id="photoField">
             <label>Photo :</label>
-            <input type="file" name="photo"><br>
+            <input type="file" name="photo">
         </div>
 
         <input class="btn-submit" type="submit" id="btn-job-submit" value="VALIDER">
     </form>
+</div>
+
+
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     
