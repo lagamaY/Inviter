@@ -1,0 +1,4 @@
+
+
+
+window.location.href = '<?php echo base_url('/enregistrer-une-personne'); ?> ';

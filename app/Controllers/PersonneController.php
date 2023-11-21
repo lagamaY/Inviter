@@ -74,6 +74,7 @@ public function store()
 
             // Crée une nouvelle instance du modèle Personne et insère les données
             $personne = new Personne();
+
             $personne->insert($data);
 
           
@@ -180,8 +181,8 @@ public function updatePersonne()
                 
                 $personne->update($id, $data);
     
-            // Pour le débogage - echo s'affiche dans la console
-            //  echo json_encode(['success' => true, $personne]);
+                 // Redirection vers la route nommée 'accueil'
+                 return redirect()->to(route_to('personnes.create'));
 
         }
  

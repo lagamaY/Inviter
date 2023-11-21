@@ -115,7 +115,8 @@
 
 
             <label for="edit-date-naissance">Date de naissance :</label>
-            <input type="date" name="date_naissance" value="<?= $personne->datenaissance?>" id="edit-date-naissance"  required><br>
+            <input type="date" name="date_naissance" value="<?= date('Y-m-d', strtotime($personne->datenaissance)) ?>" id="edit-date-naissance"  required><br>
+
 
 
             <div id="photoField" style="display: none;">
@@ -144,7 +145,6 @@
             // Affichage de la photo quand Enseignant est selectionné
 
 
-            // Affichage de la photo quand Enseignant est selectionné
             $("#type_personne").change(function() {
                 var selectedType = $(this).val();
                 var photoField = $("#photoField");
@@ -189,7 +189,6 @@
  
                         //  window.location.reload();
 
-                         window.location.href = '<?php echo base_url('/enregistrer-une-personne'); ?> ';
 
                         //  console.log(window.location.href);
 
