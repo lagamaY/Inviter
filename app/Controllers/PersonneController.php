@@ -12,17 +12,31 @@ class PersonneController extends BaseController
     
 // Affichage de la liste des personnes enregistrées
 
-public function getIndex()
-{ 
-    $personne = new Personne();
-    
-    $personnes = $personne->getPersonnesWithTypePersonne();
+    public function getIndex()
+    { 
+        
+        $personne = new Personne();
 
-    // echo json_encode($personnes);
 
-    return view('personnes/liste_personnes_enregistees', ['personnes' => $personnes]);
-}
+        $personnes = $personne->findAll();
 
+
+        // Ajoutez le libellé du type de personne à chaque personne
+        foreach ($personnes as $personne) {
+            $typePersonne = new TypePersonne(); 
+            $typePersonne->idtypepersonne = $personne->idtypepersonne; 
+            $personne->libelleTypePersonne = $typePersonne->getLibelle();
+        }
+
+
+        // echo json_encode( $personnes);
+
+      
+         
+         return view('personnes/liste_personnes_enregistees', ['personnes' => $personnes ]);
+
+        
+    }
 
 
 
@@ -74,6 +88,7 @@ public function store()
 
             // Crée une nouvelle instance du modèle Personne et insère les données
             $personne = new Personne();
+
             $personne->insert($data);
 
           
@@ -112,10 +127,16 @@ public function editPersonne()
 
         $personne = $personne->find($id);
 
-        $typesPersonne = new TypePersonne();
+        $typePersonne = new TypePersonne();
 
         // Récupère tous les types de personnes
-        $typesPersonne = $typesPersonne->findAll();
+        $typesPersonne = $typePersonne->findAll();
+        
+        // Récupère le type assoscié à chaque personne
+            
+         $typePersonne->idtypepersonne = $personne->idtypepersonne; 
+
+         $personne->libelleTypePersonne = $typePersonne->getLibelle();
         
         
         $html = view('personnes/edit_personne_enregistree', ['personne' => $personne, 'typesPersonne' => $typesPersonne]);
@@ -180,8 +201,8 @@ public function updatePersonne()
                 
                 $personne->update($id, $data);
     
-            // Pour le débogage - echo s'affiche dans la console
-            //  echo json_encode(['success' => true, $personne]);
+                 // Redirection vers la route nommée 'accueil'
+                 return redirect()->to(route_to('personnes.create'));
 
         }
  

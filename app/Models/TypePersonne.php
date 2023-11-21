@@ -23,4 +23,16 @@ class TypePersonne extends Model
              'foreign_key' => 'idtypepersonne',
          ],
      ];
+
+
+     public function getLibelle()
+     {
+    
+         $libelles = [
+             1 => 'etudiant',
+             2 => 'enseignant',
+         ];
+ 
+         return $libelles[$this->idtypepersonne] ?? 'Inconnu';
+     }
 }

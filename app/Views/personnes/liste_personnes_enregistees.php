@@ -82,10 +82,10 @@
                     <th scope="row"><?= $personne->id ?></th>
 
                     <td id-personne="<?= $personne->id ?>"><?= $personne->nom ?></td>
-                    <td id-personne="<?= $personne->id ?>"><?= $personne->prenom ?></td>
-                    <td id-personne="<?= $personne->id ?>"><?= $personne->libelle ?></td>
+                    <td id-personne="<?= $personne->id ?>"><?= $personne->prenom ?></td> 
+                    <td id-personne="<?= $personne->id ?>"><?= $personne->libelleTypePersonne ?></td>
                     <td id-personne="<?= $personne->id ?>"><?= $personne->sexe ?></td>
-                    <td id-personne="<?= $personne->id ?>"><?= $personne->datenaissance ?></td>
+                    <td id-personne="<?= $personne->id ?>"><?= date('Y-m-d', strtotime($personne->datenaissance)) ?></td>
                     <td id-personne="<?= $personne->id ?>" ><img src="<?php echo base_url('/public/photos/' . $personne->photo) ?>" width="100" height="100"></td>
 
                     <td>

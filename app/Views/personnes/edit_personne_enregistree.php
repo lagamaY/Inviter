@@ -107,20 +107,22 @@
             <label for="type_personne">Type de personne :</label>
             <select name="type_personne" id="type_personne" required>
                 <?php foreach ($typesPersonne as $type): ?>
-                    <option value="<?= $type->id ?>" >
+                    <option value="<?= $type->id ?>" <?= ($type->libelle === $personne->libelleTypePersonne) ? 'selected' : '' ?>>
                         <?= $type->libelle ?>
                     </option>
                 <?php endforeach; ?>
             </select><br>
 
 
+
             <label for="edit-date-naissance">Date de naissance :</label>
-            <input type="date" name="date_naissance" value="<?= $personne->datenaissance?>" id="edit-date-naissance"  required><br>
+            <input type="date" name="date_naissance" value="<?= date('Y-m-d', strtotime($personne->datenaissance)) ?>" id="edit-date-naissance"  required><br>
+
 
 
             <div id="photoField" style="display: none;">
                 <label for="edit-photo">Photo :</label>
-                <input type="file" name="photo" id="edit-photo" value=""><br>
+                <input type="file" name="photo" id="edit-photo"><br>
             </div>
 
 
@@ -144,7 +146,6 @@
             // Affichage de la photo quand Enseignant est selectionné
 
 
-            // Affichage de la photo quand Enseignant est selectionné
             $("#type_personne").change(function() {
                 var selectedType = $(this).val();
                 var photoField = $("#photoField");
@@ -189,7 +190,6 @@
  
                         //  window.location.reload();
 
-                         window.location.href = '<?php echo base_url('/enregistrer-une-personne'); ?> ';
 
                         //  console.log(window.location.href);
 
