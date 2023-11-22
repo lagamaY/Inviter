@@ -123,10 +123,11 @@
                 <label for="edit-photo">Photo :</label>
                 <input type="file" name="photo" id="edit-photo" accept="image/*">
                 <?php if ($personne->photo !== "etudiant_photo"): ?>
-                    <img src="<?= base_url('/public/photos/'  . $personne->photo) ?>" alt="Photo actuelle">
+                    <img id="current-photo" src="<?= base_url('/public/photos/'  . $personne->photo) ?>" alt="Photo actuelle">
                 <?php endif; ?>
                 <br>
             </div>
+
 
 
 
@@ -143,85 +144,110 @@
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 
- <!-- Affichage de la photo quand Enseignant est selectionné -->
-
+    <!-- Gestion du champ photo -->
+    
     <script>
-
         $(document).ready(function() {
+
             var photoField = $("#photoField");
 
+            var currentPhoto = $("#current-photo");
+
+            // Afficher ou cacher le champ photo en fonction tu type de personnes sélectionné
 
             $("#type_personne").change(function() {
 
                 var selectedType = $(this).val();
 
                 if (selectedType === "2") {
-                    // Affiche le champ de la photo
+                    // Affiche le champ de la photo si type personne = "Enseignant"
                     photoField.show();
-
                 } else {
                     // Cache le champ de la photo pour les types autres que "Enseignant"
                     photoField.hide();
                 }
             });
 
-         
-        });
 
-     </script>
+            // Afficher la nouvelle image chargée par la personne de type Enseignant
+            // lors de l'édition du formulaire à la place de la précédente image
 
+            $("#edit-photo").change(function() {
 
+                // Affiche la nouvelle image sélectionnée
 
- <!-- Ajax Update -->
+                var input = this;
 
-    <script>
+                if (input.files && input.files[0]) {
 
-          $('.btn-update').on('click', function () {
+                    var reader = new FileReader();
 
-            var idPersonne = $(this).attr('id-personne');
+                    reader.onload = function(e) {
 
-            $('#edit-id').val(idPersonne);
-            
-            // var formData = new FormData($('#formulaire-modification')[0]);
+                        currentPhoto.attr('src', e.target.result);
 
-            var formData = new FormData();
-
-            // Ajout des champs du formulaire à FormData
-            formData.append('id', $('#edit-id').val());
-            formData.append('nom', $('#edit-nom').val());
-            formData.append('prenom', $('#edit-prenom').val());
-            formData.append('sexe', $('#edit-sexe').val());
-            formData.append('type_personne', $('#type_personne').val());
-            formData.append('date_naissance', $('#edit-date-naissance').val());
-
-            // Ajoutez la gestion du champ photo si nécessaire
-            if ($("#type_personne").val() === "2") {
-                var photo = $('#edit-photo')[0].files[0];
-                formData.append('photo', photo);
-            }
-
-            $.ajax({
-                url: '<?php echo base_url('/update-personne'); ?>',
-                type: 'post',
-                data: formData,
-                dataType: 'JSON',
-                contentType: false,
-                cache: false,
-                processData: false,
-                success: function (data) {
-                    if (data.success) {
-                        $('body').html(data.html);
-                    } else {
-                        alert('Échec de la mise à jour de la personne');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error(xhr.responseText);
-                    alert('Erreur lors de la communication avec le serveur');
+                    };
+                    reader.readAsDataURL(input.files[0]);
                 }
             });
         });
+    </script>
 
+
+
+
+    <!-- ajax update  -->
+    
+     <script>
+
+            $('.btn-update').on('click', function () {
+                var idPersonne = $(this).attr('id-personne');
+                $('#edit-id').val(idPersonne);
+
+                var formData = new FormData();
+                formData.append('id', $('#edit-id').val());
+                formData.append('nom', $('#edit-nom').val());
+                formData.append('prenom', $('#edit-prenom').val());
+                formData.append('sexe', $('#edit-sexe').val());
+                formData.append('type_personne', $('#type_personne').val());
+                formData.append('date_naissance', $('#edit-date-naissance').val());
+
+                if ($("#type_personne").val() === "2") {
+                    // Ajouter la gestion du champ photo si nécessaire
+                    var photo = $('#edit-photo')[0].files[0];
+                    formData.append('photo', photo);
+
+                    // Mettre à jour l'image existante ou la supprimer
+                    // var existingImage = $("#photoField img");
+                    // if (existingImage.length > 0) {
+                    //     existingImage.attr('src', URL.createObjectURL(photo));
+                    // } else {
+                    //     $("#photoField").append('<img src="' + URL.createObjectURL(photo) + '" alt="Nouvelle photo">');
+                    // }
+                }
+
+                $.ajax({
+                    url: '<?php echo base_url('/update-personne'); ?>',
+                    type: 'post',
+                    data: formData,
+                    dataType: 'JSON',
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function (data) {
+                        if (data.success) {
+                            $('body').html(data.html);
+                        } else {
+                            alert('Échec de la mise à jour de la personne');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(xhr.responseText);
+                        alert('Erreur lors de la communication avec le serveur');
+                    }
+                });
+            });
+       
 
     </script>
 </body>
