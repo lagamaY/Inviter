@@ -121,7 +121,11 @@
 
             <div id="photoField" <?= ($personne->photo === "etudiant_photo") ? 'style="display:none;"' : ''; ?>>
                 <label for="edit-photo">Photo :</label>
-                <input type="file" name="photo" id="edit-photo" value="<?= $personne->photo ?>" <?= ($personne->photo !== "etudiant_photo") ? '' : ''; ?>><br>
+                <input type="file" name="photo" id="edit-photo" accept="image/*">
+                <?php if ($personne->photo !== "etudiant_photo"): ?>
+                    <img src="<?= base_url('/public/photos/'  . $personne->photo) ?>" alt="Photo actuelle">
+                <?php endif; ?>
+                <br>
             </div>
 
 
@@ -138,29 +142,35 @@
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
+
  <!-- Affichage de la photo quand Enseignant est selectionné -->
+
     <script>
+
         $(document).ready(function() {
+            var photoField = $("#photoField");
+
 
             $("#type_personne").change(function() {
 
                 var selectedType = $(this).val();
 
-                var photoField = $("#photoField");
-
-                if (selectedType === "2" ){ 
-
+                if (selectedType === "2") {
+                    // Affiche le champ de la photo
                     photoField.show();
 
                 } else {
+                    // Cache le champ de la photo pour les types autres que "Enseignant"
                     photoField.hide();
                 }
             });
 
-            
-
+         
         });
+
      </script>
+
+
 
  <!-- Ajax Update -->
 
@@ -176,7 +186,7 @@
 
             var formData = new FormData();
 
-            // Ajoutez chaque champ manuellement à FormData
+            // Ajout des champs du formulaire à FormData
             formData.append('id', $('#edit-id').val());
             formData.append('nom', $('#edit-nom').val());
             formData.append('prenom', $('#edit-prenom').val());

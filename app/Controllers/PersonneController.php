@@ -191,11 +191,7 @@ public function updatePersonne()
                     echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la manipulation du fichier']);
                     return;
                 }
-            } else {
-                // Définit une valeur par défaut si aucune image n'est téléchargée
-                $data['photo'] = 'etudiant_photo';
             }
-            
                 // Crée une nouvelle instance du modèle Personne et insère les données
                 
                 $personne->update($id, $data);
