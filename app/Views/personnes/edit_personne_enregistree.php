@@ -83,8 +83,7 @@
         </header>
     </div>
 
-    <div class="container">
-        <form id="formulaire-modification" enctype="multipart/form-data" >
+    <div class="container" id="formulaire-modification">
         
             <?= csrf_field() ?>
 
@@ -120,10 +119,11 @@
 
 
 
-            <div id="photoField" <?php echo ($personne->photo === "etudiant_photo") ? 'style="display:none"' : ''; ?>>
+            <div id="photoField" <?= ($personne->photo === "etudiant_photo") ? 'style="display:none;"' : ''; ?>>
                 <label for="edit-photo">Photo :</label>
-                <input type="file" name="photo" id="edit-photo" value="<?= $personne->photo ?>" ><br>
+                <input type="file" name="photo" id="edit-photo" value="<?= $personne->photo ?>" <?= ($personne->photo !== "etudiant_photo") ? '' : ''; ?>><br>
             </div>
+
 
 
             <div class="btn-container">
@@ -132,19 +132,15 @@
             </div>
 
 
-        </form>
+        
         
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-    
+ <!-- Affichage de la photo quand Enseignant est selectionné -->
     <script>
         $(document).ready(function() {
-
-
-            // Affichage de la photo quand Enseignant est selectionné
-
 
             $("#type_personne").change(function() {
 
@@ -164,10 +160,11 @@
             
 
         });
+     </script>
 
+ <!-- Ajax Update -->
 
-        
-          // Ajax Update
+    <script>
 
           $('.btn-update').on('click', function () {
 
@@ -175,15 +172,24 @@
 
             $('#edit-id').val(idPersonne);
             
-            var formData = new FormData($('#formulaire-modification')[0]);
+            // var formData = new FormData($('#formulaire-modification')[0]);
 
-            // console.log("Données envoyées au serveur :");
+            var formData = new FormData();
 
-            // for (var pair of formData.entries()) {
-            //     console.log(pair[0] + ', ' + pair[1]);
-            // }
+            // Ajoutez chaque champ manuellement à FormData
+            formData.append('id', $('#edit-id').val());
+            formData.append('nom', $('#edit-nom').val());
+            formData.append('prenom', $('#edit-prenom').val());
+            formData.append('sexe', $('#edit-sexe').val());
+            formData.append('type_personne', $('#type_personne').val());
+            formData.append('date_naissance', $('#edit-date-naissance').val());
 
-            // debugger;
+            // Ajoutez la gestion du champ photo si nécessaire
+            if ($("#type_personne").val() === "2") {
+                var photo = $('#edit-photo')[0].files[0];
+                formData.append('photo', photo);
+            }
+
             $.ajax({
                 url: '<?php echo base_url('/update-personne'); ?>',
                 type: 'post',
@@ -193,21 +199,16 @@
                 cache: false,
                 processData: false,
                 success: function (data) {
-                    if (data.status === 'success') {
- 
-                        //  window.location.reload();
-
-
-                        //  console.log(window.location.href);
-
+                    if (data.success) {
+                        $('body').html(data.html);
                     } else {
                         alert('Échec de la mise à jour de la personne');
                     }
                 },
-                // error: function (xhr, status, error) {
-                //     console.error(xhr.responseText);
-                //     alert('Erreur lors de la communication avec le serveur');
-                // }
+                error: function (xhr, status, error) {
+                    console.error(xhr.responseText);
+                    alert('Erreur lors de la communication avec le serveur');
+                }
             });
         });
 

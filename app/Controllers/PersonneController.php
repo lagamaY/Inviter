@@ -28,11 +28,8 @@ class PersonneController extends BaseController
             $personne->libelleTypePersonne = $typePersonne->getLibelle();
         }
 
+        
 
-        // echo json_encode( $personnes);
-
-      
-         
          return view('personnes/liste_personnes_enregistees', ['personnes' => $personnes ]);
 
         
@@ -156,6 +153,8 @@ public function editPersonne()
 
 
 
+
+
 // Mise à jour des données de la personne dans la BD.
 
 public function updatePersonne()
@@ -200,10 +199,24 @@ public function updatePersonne()
                 // Crée une nouvelle instance du modèle Personne et insère les données
                 
                 $personne->update($id, $data);
-    
-                 // Redirection vers la route nommée 'accueil'
-                 return redirect()->to(route_to('personnes.create'));
 
+
+                $personnes = $personne->findAll();
+
+
+                // Ajoutez le libellé du type de personne à chaque personne
+                foreach ($personnes as $personne) {
+                    $typePersonne = new TypePersonne(); 
+                    $typePersonne->idtypepersonne = $personne->idtypepersonne; 
+                    $personne->libelleTypePersonne = $typePersonne->getLibelle();
+                }
+        
+                       
+            $html = view('personnes/liste_personnes_enregistees', ['personnes' => $personnes ]);
+
+
+            return $this->response->setJSON(['success' => true, 'html' => $html]);
+            
         }
  
 
