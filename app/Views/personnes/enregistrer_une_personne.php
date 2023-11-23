@@ -117,8 +117,10 @@
         <input type="date" name="date_naissance" required>
 
         <div id="photoField">
-            <label>Photo :</label>
-            <input type="file" name="photo">
+            <label for="edit-photo" >Photo :</label>
+            <input type="file" name="photo" id="edit-photo" accept="image/*" >
+            <img id="previewPhoto" src="#" alt="Aperçu de la photo" style="display:none;">
+
         </div>
 
         <div class="btn-container">
@@ -144,6 +146,24 @@
                     photoField.show();
                 } else {
                     photoField.hide();
+                }
+            });
+
+
+          // Afficher la nouvelle image chargée par la personne de type Enseignant
+            // lors de l'édition du formulaire à la place de la précédente image
+
+            $("#edit-photo").change(function () {
+                var input = this;
+
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        // Afficher l'aperçu de la photo
+                        $('#previewPhoto').attr('src', e.target.result).show();
+                    };
+                    reader.readAsDataURL(input.files[0]);
                 }
             });
 

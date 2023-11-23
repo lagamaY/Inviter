@@ -10,7 +10,6 @@ use App\Models\TypePersonne;
 class PersonneController extends BaseController
 {
     
-    
 // Affichage de la liste des personnes enregistrées
 
     public function getIndex()
@@ -24,14 +23,12 @@ class PersonneController extends BaseController
 
         // Ajoutez le libellé du type de personne à chaque personne
         foreach ($personnes as $personne) {
-
             $typePersonne = new TypePersonne(); 
-
             $typePersonne->idtypepersonne = $personne->idtypepersonne; 
-
             $personne->libelleTypePersonne = $typePersonne->getLibelle();
         }
 
+        
 
          return view('personnes/liste_personnes_enregistees', ['personnes' => $personnes ]);
 
@@ -50,7 +47,7 @@ class PersonneController extends BaseController
 
         // Récupérer les types de personnes
         $typesPersonne = $typesPersonne->findAll();
-         
+         // Charger la vue avec les données récupérées
          
          return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
     }
@@ -65,7 +62,6 @@ public function store()
     try {
         // Vérifie si la méthode de la requête est 'post'
         if ($this->request->getMethod() == 'post') { 
-
             // Récupère les données du formulaire
             $data = [
                 'idtypepersonne' => $this->request->getVar('type_personne'),
@@ -77,16 +73,11 @@ public function store()
 
             // Ajoutez cette condition avant le traitement du fichier
             if (!empty($_FILES['photo']['name'])) {
-
                 // Traitement de l'image
                 $photo = $this->request->getFile('photo');
-
                 $photoName = time() . '.' . $photo->getClientExtension();
-
                 $photo->move(ROOTPATH . 'public/photos', $photoName);
-
                 $data['photo'] = $photoName;
-
             } else {
                 // Définit une valeur par défaut si aucune image n'est téléchargée
                 $data['photo'] = 'etudiant_photo';
@@ -168,6 +159,7 @@ public function editPersonne()
 
 public function updatePersonne()
 {
+    $personne = new Personne();
 
     // Vérifiez si la clé 'id' existe dans la requête
 
@@ -209,8 +201,6 @@ public function updatePersonne()
             }
             
                 // Crée une nouvelle instance du modèle Personne et insère les données
-
-                $personne = new Personne();
                 
                 $personne->update($id, $data);
 
