@@ -244,8 +244,20 @@ public function supprimerPersonne()
     if ($this->request->getPost('id')) {
         $id = $this->request->getPost('id');
 
-        // Ajoutez une condition WHERE pour spécifier l'ID à supprimer
+        // Récupérez le nom de la photo de la personne avant de la supprimer de la base de données
+        $photoToDelete = $personne->select('photo')->where('id', $id)->first()->photo;
+    
+
+        // Supprimez la personne de la base de données
         $personne->where('id', $id)->delete();
+
+        // Supprimez la photo du dossier si elle n'est pas égale à 'etudiant_photo'
+        if ($photoToDelete && $photoToDelete != 'etudiant_photo') {
+            $photoPath = FCPATH . 'public/photos/' . $photoToDelete;
+            if (file_exists($photoPath)) {
+                unlink($photoPath); // Supprime le fichier
+            }
+        }
 
         // Pour le débogage - echo s'affiche dans la console
         echo json_encode(['success' => true, 'message' => 'Personne supprimée avec succès']);
@@ -254,6 +266,7 @@ public function supprimerPersonne()
         echo json_encode(['success' => false, 'message' => 'ID not provided']);
     }
 }
+
 
 
 }
