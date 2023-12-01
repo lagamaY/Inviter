@@ -84,8 +84,6 @@
     </div>
 
     <div class="container" id="formulaire-modification">
-        
-            <?= csrf_field() ?>
 
             <input type="hidden" id="edit-id" name="id"  />
 
@@ -216,14 +214,6 @@
                     // Ajouter la gestion du champ photo si nécessaire
                     var photo = $('#edit-photo')[0].files[0];
                     formData.append('photo', photo);
-
-                    // Mettre à jour l'image existante ou la supprimer
-                    // var existingImage = $("#photoField img");
-                    // if (existingImage.length > 0) {
-                    //     existingImage.attr('src', URL.createObjectURL(photo));
-                    // } else {
-                    //     $("#photoField").append('<img src="' + URL.createObjectURL(photo) + '" alt="Nouvelle photo">');
-                    // }
                 }
 
                 $.ajax({

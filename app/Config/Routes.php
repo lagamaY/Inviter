@@ -11,7 +11,15 @@ use CodeIgniter\Router\RouteCollection;
 // Affichage de la liste des personnes enregistrées
 $routes->get('/', 'PersonneController::getIndex', ['as' => 'accueil']);
 $routes->get('/enregistrer-une-personne', 'PersonneController::getRegisterForm', ['as' => 'personnes.create']);
-$routes->post('/enregistrer-une-personne', 'PersonneController::store', ['as' => 'personnes.store']);
+
+// Route Enregistrer les personnes avec ajax
+$routes->post('/enregistrer-avec-ajax', 'PersonneController::store', ['as' => 'personnes.store']);
+// Fin-Enregistrer avec ajax
+
+// Route Enregistrer les personnes avec php
+$routes->post('/enregistrer-avec-php', 'PersonneController::enregistrerAvecPhp', ['as' => 'enregistrerAvecPhp']);
+// Fin-Enregistrer avec php
+
 $routes->post('/edit-personne', 'PersonneController::editPersonne');
 
 $routes->post('/update-personne', 'PersonneController::updatePersonne');

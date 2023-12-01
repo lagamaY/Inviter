@@ -55,7 +55,7 @@ class PersonneController extends BaseController
 
 
 
-// Stockage des données dans la bd
+// Enregistrement d'une personne dans la bd avec Ajax
 
 public function store()
 {
@@ -88,9 +88,19 @@ public function store()
 
             $personne->insert($data);
 
-          
-            // Redirection vers la route nommée 'accueil'
-            return redirect()->to(route_to('accueil'));
+
+            // Redirection 
+
+            $typesPersonne = new TypePersonne();
+
+            // Récupérer les types de personnes
+            $typesPersonne = $typesPersonne->findAll();
+             // Charger la vue avec les données récupérées
+
+            $html = view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
+    
+            return $this->response->setJSON(['success' => true, 'html' => $html, 'message' => 'ENREGISTREMENT EFFECTUE AVEC SUCCES']);
+           
 
         }
     } catch (\Exception $e) {
@@ -107,6 +117,44 @@ public function store()
         return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
     }
 }
+
+
+
+// Enregistrement d'une personne dans la bd avec PHP
+
+public function enregistrerAvecPhp()
+    {
+      
+        $personne = new Personne();
+        // Récupérer les données du formulaire
+        $data = [
+            'nom' => $this->request->getPost('nom'),
+            'prenom' => $this->request->getPost('prenom'),
+            'sexe' => $this->request->getPost('sexe'),
+            'type_personne' => $this->request->getPost('type_personne'),
+            'date_naissance' => $this->request->getPost('date_naissance'),
+            // Ajoutez d'autres champs selon vos besoins
+        ];
+
+        if (!empty($_FILES['photo']['name'])) {
+            // Traitement de l'image
+            $photo = $request->getFile('photo');
+            $photoName = time() . '.' . $photo->getClientExtension();
+            $photo->move(ROOTPATH . 'public/photos', $photoName);
+            $personne->photo = $photoName; // Assurez-vous que la colonne dans la base de données est correcte
+        } else {
+            // Définit une valeur par défaut si aucune image n'est téléchargée
+            $personne->photo = 'etudiant_photo';
+        }
+        // Enregistrez les données dans la base de données
+        $personne->insert($data);
+
+        // Redirigez ou effectuez d'autres actions après l'enregistrement
+        return redirect()->to(route_to('accueil'));
+    }
+
+
+
 
 
 

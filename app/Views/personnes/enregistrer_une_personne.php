@@ -78,7 +78,8 @@
     </style>
 </head>
 <body>
-   
+
+
 <div class="container-fluid">
     <header class="text-center">
         <h1>Enregistrez-vous !</h1>
@@ -123,10 +124,14 @@
 
         </div>
 
+
         <div class="btn-container">
-                <a href="<?php echo base_url('/'); ?>" class="btn-add">Déjà enregistré ? voir la liste.</a>
-                <input class="btn-submit" type="submit" id="btn-job-submit" value="VALIDER">
+            <a href="<?php echo base_url('/'); ?>" class="btn-add">Déjà enregistré ? </a>
+            <button class="btn-submit" type="button" id="btn-job-submit-ajax">Enregistrer</button>
+            <button class="btn-submit" type="submit" id="btn-job-submit-php" name="submit_php">Enregistrer & Quitter</button>
+
         </div>
+
 
     </form>
 </div>
@@ -168,34 +173,44 @@
             });
 
 
-            // Envoie des données du formulaire à la route Post
-
-            $('#btn-job-submit').on('submit', function(event){
+         // Envoie des données du formulaire à la route Post avec AJAX
+        $('#btn-job-submit-ajax').on('click', function(event) {
             event.preventDefault();
+            sendFormData('<?php echo base_url('/enregistrer-avec-ajax'); ?>');
+        });
+
+
+        // Envoie des données du formulaire à la route PHP
+            $('#btn-job-submit-php').on('click', function(event) {
+            // Utilisez le formulaire standard pour l'envoi PHP
+            $('#ajoutPersonneForm').attr('action', '<?php echo base_url('/enregistrer-avec-php'); ?>');
+          });
+
+        function sendFormData(url) {
             $.ajax({
-                url:'<?= route_to('personnes.store') ?>',
-                method:"POST",
-                data:new FormData(this),
-                dataType:'JSON',
+                url: url,
+                method: "POST",
+                data: new FormData($('#ajoutPersonneForm')[0]),
+                dataType: 'JSON',
                 contentType: false,
                 cache: false,
                 processData: false,
-                success:function(data) {
-                    if (data.status === 'success') {
-                        
+                success: function(data) {
+                    if (data.success) {
+                        alert(data.message); // Afficher le message de succès
+                        $('body').html(data.html);
                     } else {
                         // Afficher un message d'erreur
-                        alert('Erreur : ' + data.message);
+                        alert('Échec de la mise à jour de la personne');
                     }
                 },
-                
-            error: function () {
-                console.error('Une erreur s\'est produite lors de la requête AJAX.');
-            }
-                })
-            })
+                error: function() {
+                    console.error('Une erreur s\'est produite lors de la requête AJAX.');
+                }
+            });
+        }
+    });
 
-        });
     </script>
 </body>
 </html>
