@@ -178,8 +178,22 @@ public function updatePersonne()
                 'sexe' => $this->request->getVar('sexe'),
                 'datenaissance' => $this->request->getVar('date_naissance'),
             ];
+
+            // Vérifiez s'il y a une ancienne photo à supprimer
+            if ($personneTrouve->photo !== 'etudiant_photo') {
+
+                $oldPhotoPath = FCPATH . 'public/photos/' . $personneTrouve->photo;
+                
+                if (file_exists($oldPhotoPath)) {
+
+                    unlink($oldPhotoPath); // Supprime l'ancienne photo
+                }
+            }
     
+             // Vérifiez si l'input photo est présent
+
             if (!empty($_FILES['photo']['name'])) {
+
                 $photo = $this->request->getFile('photo');
             
                 if ($photo->isValid() && !$photo->hasMoved()) {
@@ -199,6 +213,7 @@ public function updatePersonne()
                 }
                 
             }
+
             
                 // Crée une nouvelle instance du modèle Personne et insère les données
                 
@@ -242,6 +257,7 @@ public function supprimerPersonne()
 
     // Vérifiez si la clé 'id' existe dans la requête
     if ($this->request->getPost('id')) {
+
         $id = $this->request->getPost('id');
 
         // Récupérez le nom de la photo de la personne avant de la supprimer de la base de données
@@ -266,6 +282,8 @@ public function supprimerPersonne()
         echo json_encode(['success' => false, 'message' => 'ID not provided']);
     }
 }
+
+
 
 
 
