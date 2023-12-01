@@ -50,7 +50,15 @@
 
 </head>
 <body>
- 
+<?php if (session()->has('success')): ?>
+    <div class="alert alert-success">
+        <?= session('success') ?>
+    </div>
+<?php endif; ?>
+
+
+                    
+
     <h1>Liste des personnes enregistrées</h1>
 
     <div class="btn-enregistrer-container">

@@ -55,7 +55,7 @@ class PersonneController extends BaseController
 
 
 
-// Stockage des données dans la bd
+// Enregistrement d'une personne dans la bd avec Ajax
 
 public function store()
 {
@@ -88,9 +88,19 @@ public function store()
 
             $personne->insert($data);
 
-          
-            // Redirection vers la route nommée 'accueil'
-            return redirect()->to(route_to('accueil'));
+
+            // Redirection 
+
+            $typesPersonne = new TypePersonne();
+
+            // Récupérer les types de personnes
+            $typesPersonne = $typesPersonne->findAll();
+             // Charger la vue avec les données récupérées
+
+            $html = view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
+    
+            return $this->response->setJSON(['success' => true, 'html' => $html, 'message' => 'ENREGISTREMENT EFFECTUE AVEC SUCCES']);
+           
 
         }
     } catch (\Exception $e) {
@@ -107,6 +117,65 @@ public function store()
         return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
     }
 }
+
+
+
+// Enregistrement d'une personne dans la bd avec PHP
+
+public function enregistrerAvecPhp()
+    {
+      
+        {
+            try {
+                // Vérifie si la méthode de la requête est 'post'
+                if ($this->request->getMethod() == 'post') {
+                    // Récupère les données du formulaire
+                    $data = [
+                        'idtypepersonne' => $this->request->getVar('type_personne'),
+                        'nom' => $this->request->getVar('nom'),
+                        'prenom' => $this->request->getVar('prenom'),
+                        'sexe' => $this->request->getVar('sexe'),
+                        'datenaissance' => $this->request->getVar('date_naissance'),
+                    ];
+    
+                    // Ajoutez cette condition avant le traitement du fichier
+                    if (!empty($_FILES['photo']['name'])) {
+                        // Traitement de l'image
+                        $photo = $this->request->getFile('photo');
+                        $photoName = time() . '.' . $photo->getClientExtension();
+                        $photo->move(ROOTPATH . 'public/photos', $photoName);
+                        $data['photo'] = $photoName;
+                    } else {
+                        // Définit une valeur par défaut si aucune image n'est téléchargée
+                        $data['photo'] = 'etudiant_photo';
+                    }
+    
+                    // Crée une nouvelle instance du modèle Personne et insère les données
+                    $personneModel = new Personne();
+                    $personneModel->insert($data);
+    
+                     // Redirigez ou effectuez d'autres actions après l'enregistrement
+                    return redirect()->to(route_to('accueil'))->with('success', 'ENREGISTREMENT EFFECTUE AVEC SUCCES');
+                }
+            } catch (\Exception $e) {
+                // En cas d'erreur, enregistre le message d'erreur dans le journal des erreurs
+                log_message('error', $e->getMessage());
+    
+                // Crée une nouvelle instance du modèle TypePersonne
+                $typesPersonneModel = new TypePersonne();
+    
+                // Récupère tous les types de personnes
+                $typesPersonne = $typesPersonneModel->findAll();
+    
+                // Charge la vue avec les données récupérées
+                return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
+            }
+        }
+    
+    }
+
+
+
 
 
 
