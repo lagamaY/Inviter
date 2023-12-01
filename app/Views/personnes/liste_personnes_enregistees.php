@@ -86,7 +86,19 @@
                     <td id-personne="<?= $personne->id ?>"><?= $personne->libelleTypePersonne ?></td>
                     <td id-personne="<?= $personne->id ?>"><?= $personne->sexe ?></td>
                     <td id-personne="<?= $personne->id ?>"><?= date('Y-m-d', strtotime($personne->datenaissance)) ?></td>
-                    <td id-personne="<?= $personne->id ?>" ><img src="<?php echo base_url('/public/photos/' . $personne->photo) ?>" width="100" height="100"></td>
+
+                    <td id-personne="<?= $personne->id ?>">
+                        <?php
+                        if ($personne->photo != 'etudiant_photo') {
+                            // Affiche la photo de l'étudiant
+                            echo '<img src="' . base_url('/public/photos/' . $personne->photo) . '" width="100" height="100">';
+                        } else {
+                            // Affiche l'image par défaut
+                            echo '<img src="' . base_url('/public/photos/1700209723.png') . '" width="100" height="100">';
+                        }
+                        ?>
+                    </td>
+
 
                     <td>
                     
@@ -139,9 +151,7 @@
         });
 
 
-    </script>
-
-    <script>
+   
 
       // Ajax Delete 
 
