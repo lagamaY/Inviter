@@ -94,7 +94,7 @@
                     <td id-personne="<?= $personne->id ?>"><?= $personne->prenom ?></td> 
                     <td id-personne="<?= $personne->id ?>"><?= $personne->libelleTypePersonne ?></td>
                     <td id-personne="<?= $personne->id ?>"><?= $personne->sexe ?></td>
-                    <td id-personne="<?= $personne->id ?>"><?= date('Y-m-d', strtotime($personne->datenaissance)) ?></td>
+                    <td id-personne="<?= $personne->id ?>"><?= date('d-m-Y', strtotime($personne->datenaissance)) ?></td>
 
                     <td id-personne="<?= $personne->id ?>">
                         <?php

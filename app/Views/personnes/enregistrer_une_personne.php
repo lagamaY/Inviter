@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Ajouter une personne</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    
+
+
     <style>
         /* Ajouter le style personnalisé ici */
         body {
@@ -82,7 +87,13 @@
     </style>
 </head>
 <body>
-
+<!-- message d'alerte -->
+<?php if (session()->has('errors')): ?>
+        <div class="alert alert-warning">
+            <?= session('errors') ?>
+        </div>
+<?php endif; ?>
+<!-- Fin message d'alerte -->
 
 <div class="container-fluid">
     <header class="text-center">
@@ -119,11 +130,11 @@
         </select>
 
         <label>Date de naissance :</label>
-        <input type="date" name="date_naissance" required>
+        <input type="text" name="date_naissance" id="date" placeholder="Choisir une date" required>
 
         <div id="photoField">
             <label for="edit-photo" >Photo :</label>
-            <input type="file" name="photo" id="edit-photo" accept="image/*" required>
+            <input type="file" name="photo" id="edit-photo" accept="image/*" >
             <img id="previewPhoto" src="#" alt="Aperçu de la photo" style="display:none;">
 
         </div>
@@ -143,10 +154,34 @@
 
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+   
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>                       
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>                     
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.fr.min.js"></script>  
+
+
     
     <script>
+
+
         $(document).ready(function() {
-            
+
+            // Affichage du calendrier de sélectionner de la date au clic dans l'input date
+
+            $('#date').datepicker({
+            isRTL: true,
+            autoclose: true, 
+            todayHighlight: true,
+            language: 'fr',
+            format: 'dd-mm-yyyy'
+            });
+
+  
+
+                
+ 
             // Affichage de la photo quand Professeur est selectionné
             $("#type_personne").change(function() {
                 var selectedType = $(this).val();
@@ -157,6 +192,9 @@
                     photoField.hide();
                 }
             });
+
+
+
 
 
           // Afficher la nouvelle image chargée par la personne de type Enseignant
@@ -177,12 +215,32 @@
 
 
 
+
+
         // Envoie des données du formulaire à la route PHP
-            $('#btn-job-submit-php').on('click', function(event) {
+        $('#btn-job-submit-php').on('click', function(event) {
+            // Vérifier le type de personne
+            var selectedType = $('#type_personne').val();
+            
+            // Si le type de personne est égal à 2, vérifier si un fichier a été sélectionné
+            if (selectedType === "2") {
+                var photoInput = $('#edit-photo');
+
+                // Vérifier si un fichier a été sélectionné
+                if (photoInput[0].files.length === 0) {
+                    alert("Veuillez sélectionner une photo.");
+                    return false; // Empêcher l'envoi du formulaire
+                }
+            }
+
             // Utilisez le formulaire standard pour l'envoi PHP
             $('#ajoutPersonneForm').attr('action', '<?php echo base_url('/enregistrer-avec-php'); ?>');
-          });
+        });
 
+
+
+
+        
 
         // Envoie des données du formulaire à la route Post avec AJAX
         $('#btn-job-submit-ajax').on('click', function(event) {
