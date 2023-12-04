@@ -83,11 +83,20 @@ public function store()
                 $data['photo'] = 'etudiant_photo';
             }
 
-            // Crée une nouvelle instance du modèle Personne et insère les données
+            // Crée une nouvelle instance du modèle Personne
             $personne = new Personne();
 
-            $personne->insert($data);
+            // Vérifie s'il existe des règles de validation dans le modèle
+            if (!empty($personne->validationRules)) {
+                // Applique les règles de validation
+                if (!$personne->validate($data)) {
+                    // Si la validation échoue, renvoie les erreurs au client
+                    return $this->response->setJSON(['error' => true, 'messages' => $personne->errors()]);
+                }
+            }
 
+            // Insertion des données si la validation réussit
+            $personne->insert($data);
 
             // Redirection 
 
@@ -95,13 +104,11 @@ public function store()
 
             // Récupérer les types de personnes
             $typesPersonne = $typesPersonne->findAll();
-             // Charger la vue avec les données récupérées
+            // Charger la vue avec les données récupérées
 
             $html = view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
-    
-            return $this->response->setJSON(['success' => true, 'html' => $html, 'message' => 'ENREGISTREMENT EFFECTUE AVEC SUCCES']);
-           
 
+            return $this->response->setJSON(['success' => true, 'html' => $html, 'message' => 'ENREGISTREMENT EFFECTUE AVEC SUCCES']);
         }
     } catch (\Exception $e) {
         // En cas d'erreur, enregistre le message d'erreur
@@ -112,11 +119,12 @@ public function store()
 
         // Récupère tous les types de personnes
         $typesPersonne = $typesPersonne->findAll();
-        
+
         // Charge la vue avec les données récupérées
         return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
     }
 }
+
 
 
 
@@ -151,8 +159,9 @@ public function enregistrerAvecPhp()
                     }
     
                     // Crée une nouvelle instance du modèle Personne et insère les données
-                    $personneModel = new Personne();
-                    $personneModel->insert($data);
+                    $personne = new Personne();
+                    
+                    $personne->insert($data);
     
                      // Redirigez ou effectuez d'autres actions après l'enregistrement
                     return redirect()->to(route_to('accueil'))->with('success', 'ENREGISTREMENT EFFECTUE AVEC SUCCES');
@@ -162,10 +171,10 @@ public function enregistrerAvecPhp()
                 log_message('error', $e->getMessage());
     
                 // Crée une nouvelle instance du modèle TypePersonne
-                $typesPersonneModel = new TypePersonne();
+                $typesPersonne = new TypePersonne();
     
                 // Récupère tous les types de personnes
-                $typesPersonne = $typesPersonneModel->findAll();
+                $typesPersonne = $typesPersonne->findAll();
     
                 // Charge la vue avec les données récupérées
                 return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);

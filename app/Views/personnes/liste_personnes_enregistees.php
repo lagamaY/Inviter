@@ -50,11 +50,12 @@
 
 </head>
 <body>
-<?php if (session()->has('success')): ?>
-    <div class="alert alert-success">
-        <?= session('success') ?>
-    </div>
-<?php endif; ?>
+
+    <?php if (session()->has('success')): ?>
+        <div class="alert alert-success">
+            <?= session('success') ?>
+        </div>
+    <?php endif; ?>
 
 
                     

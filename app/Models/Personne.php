@@ -27,5 +27,32 @@ class Personne extends Model
     ];
 
 
+    // Validation des champs
+    protected $validationRules = [
+        'nom'             => 'required',
+        'prenom'          => 'required',
+        'sexe'            => 'required',
+        'datenaissance'   => 'required',
+        'idtypepersonne'  => 'required',
+    ];
+
+    // Messages d'erreur personnalisés
+    protected $validationMessages = [
+        'nom' => [
+            'required' => 'Le champ nom est obligatoire.',
+        ],
+        'prenom' => [
+            'required' => 'Le champ prénom est obligatoire.',
+        ],
+        'sexe' => [
+            'required' => 'Le champ sexe est obligatoire.',
+        ],
+        'datenaissance' => [
+            'required' => 'Le champ date de naissance est obligatoire.',
+        ],
+        'idtypepersonne' => [
+            'required' => 'Le champ type de personne est obligatoire.',
+        ],
+    ];
     
 }

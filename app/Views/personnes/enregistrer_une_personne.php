@@ -65,6 +65,10 @@
             cursor: pointer;
         }
 
+        #btn-job-submit-ajax {
+            margin-left: 55px;
+        }
+
         .btn-submit:hover {
             background-color: #218838; /* Couleur verte plus foncée au survol */
         }
@@ -203,7 +207,8 @@
                         $('body').html(data.html);
                     } else {
                         // Afficher un message d'erreur
-                        alert('Échec de la mise à jour de la personne');
+                        alert("Échec de l'enregistrement, veuillez remplir tous les champs svp !");
+                        console.log(response.message);
                     }
                 },
                 error: function() {
