@@ -123,7 +123,7 @@
 
         <div id="photoField">
             <label for="edit-photo" >Photo :</label>
-            <input type="file" name="photo" id="edit-photo" accept="image/*" >
+            <input type="file" name="photo" id="edit-photo" accept="image/*" required>
             <img id="previewPhoto" src="#" alt="Aperçu de la photo" style="display:none;">
 
         </div>
@@ -160,7 +160,6 @@
 
 
           // Afficher la nouvelle image chargée par la personne de type Enseignant
-            // lors de l'édition du formulaire à la place de la précédente image
 
             $("#edit-photo").change(function () {
                 var input = this;
@@ -212,6 +211,8 @@
                     }
                 },
                 error: function() {
+                    // Afficher un message d'erreur
+                    alert("Échec de l'enregistrement, veuillez remplir tous les champs svp !");
                     console.error('Une erreur s\'est produite lors de la requête AJAX.');
                 }
             });

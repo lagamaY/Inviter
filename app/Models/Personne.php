@@ -34,6 +34,7 @@ class Personne extends Model
         'sexe'            => 'required',
         'datenaissance'   => 'required',
         'idtypepersonne'  => 'required',
+        'photo'           => 'required',
     ];
 
     // Messages d'erreur personnalisés

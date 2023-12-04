@@ -60,6 +60,9 @@ class PersonneController extends BaseController
 public function store()
 {
     try {
+
+        // Crée une nouvelle instance du modèle Personne
+        $personne = new Personne();
         // Vérifie si la méthode de la requête est 'post'
         if ($this->request->getMethod() == 'post') { 
             // Récupère les données du formulaire
@@ -80,11 +83,12 @@ public function store()
                 $data['photo'] = $photoName;
             } else {
                 // Définit une valeur par défaut si aucune image n'est téléchargée
-                $data['photo'] = 'etudiant_photo';
+                if($data['idtypepersonne'] == 2){
+                    return $this->response->setJSON(['error' => true, 'messages' => $personne->errors()]);
+                }else{
+                    $data['photo'] = 'etudiant_photo';
+                }
             }
-
-            // Crée une nouvelle instance du modèle Personne
-            $personne = new Personne();
 
             // Vérifie s'il existe des règles de validation dans le modèle
             if (!empty($personne->validationRules)) {
@@ -163,7 +167,7 @@ public function enregistrerAvecPhp()
                     
                     $personne->insert($data);
     
-                     // Redirigez ou effectuez d'autres actions après l'enregistrement
+                     // Redirigez après l'enregistrement
                     return redirect()->to(route_to('accueil'))->with('success', 'ENREGISTREMENT EFFECTUE AVEC SUCCES');
                 }
             } catch (\Exception $e) {
@@ -288,12 +292,21 @@ public function updatePersonne()
                 if($this->request->getVar('type_personne') == 1){
 
                     $data['photo'] = 'etudiant_photo';
+                }else{
+                    return $this->response->setJSON(['error' => true, 'messages' => $personne->errors()]);
                 }
                 
             }
 
-            
-                // Crée une nouvelle instance du modèle Personne et insère les données
+            // Vérifie s'il existe des règles de validation dans le modèle
+            if (!empty($personne->validationRules)) {
+                // Applique les règles de validation
+                if (!$personne->validate($data)) {
+                    // Si la validation échoue, renvoie les erreurs au client
+                    return $this->response->setJSON(['error' => true, 'messages' => $personne->errors()]);
+                }else {
+
+               // Crée une nouvelle instance du modèle Personne et insère les données
                 
                 $personne->update($id, $data);
 
@@ -309,10 +322,14 @@ public function updatePersonne()
                 }
         
                        
-            $html = view('personnes/liste_personnes_enregistees', ['personnes' => $personnes ]);
+                    $html = view('personnes/liste_personnes_enregistees', ['personnes' => $personnes ]);
 
 
-            return $this->response->setJSON(['success' => true, 'html' => $html]);
+                    return $this->response->setJSON(['success' => true, 'html' => $html]);
+                        }
+            }
+            
+
             
         }
  

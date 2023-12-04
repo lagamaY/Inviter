@@ -228,7 +228,7 @@
                         if (data.success) {
                             $('body').html(data.html);
                         } else {
-                            alert('Échec de la mise à jour de la personne');
+                            alert('Échec de la mise à jour, veuillez remplir tous les champs svp !');
                         }
                     },
                     error: function (xhr, status, error) {
