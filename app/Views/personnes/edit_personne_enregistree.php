@@ -119,7 +119,7 @@
 
             <div id="photoField" <?= ($personne->photo === "etudiant_photo") ? 'style="display:none;"' : ''; ?>>
                 <label for="edit-photo">Photo :</label>
-                <input type="file" name="photo" id="edit-photo" accept="image/*">
+                <input type="file" name="photo" id="edit-photo" class="affichePhotoSelectionnee"  accept="image/*">
                 <?php if ($personne->photo !== "etudiant_photo"): ?>
                     <img id="current-photo" src="<?= base_url('/public/photos/'  . $personne->photo) ?>" alt="Photo actuelle">
                 <?php endif; ?>
@@ -147,6 +147,11 @@
     <script>
         $(document).ready(function() {
 
+
+
+            
+
+            // Gestion de l'image
             var photoField = $("#photoField");
 
             var currentPhoto = $("#current-photo");
@@ -167,6 +172,8 @@
             });
 
 
+
+
             // Afficher la nouvelle image chargée par la personne de type Enseignant
             // lors de l'édition du formulaire à la place de la précédente image
 
@@ -183,20 +190,21 @@
                     reader.onload = function(e) {
 
                         currentPhoto.attr('src', e.target.result);
+                        
 
                     };
                     reader.readAsDataURL(input.files[0]);
                 }
             });
         });
-    </script>
+   
 
 
 
 
-    <!-- ajax update  -->
+    // <!-- ajax update  -->
     
-     <script>
+     
 
             $('.btn-update').on('click', function () {
                 var idPersonne = $(this).attr('id-personne');
@@ -226,6 +234,7 @@
                     processData: false,
                     success: function (data) {
                         if (data.success) {
+                            alert(data.message); // Afficher le message de succès
                             $('body').html(data.html);
                         } else {
                             alert('Échec de la mise à jour, veuillez remplir tous les champs svp !');

@@ -87,13 +87,8 @@
     </style>
 </head>
 <body>
-<!-- message d'alerte -->
-<?php if (session()->has('errors')): ?>
-        <div class="alert alert-warning">
-            <?= session('errors') ?>
-        </div>
-<?php endif; ?>
-<!-- Fin message d'alerte -->
+
+
 
 <div class="container-fluid">
     <header class="text-center">
@@ -106,7 +101,7 @@
         <div class="form-row">
             <div class="col">
                 <label>Nom :</label>
-                <input type="text" name="nom" required>
+                <input type="text" name="nom" >
             </div>
             <div class="col">
                 <label>Prénom :</label>
@@ -149,11 +144,18 @@
 
 
     </form>
+
+
 </div>
 
 
-
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <?php if (session()->has('alert')) : ?>
+    <script>
+        alert("<?= session('alert') ?>");
+    </script>
+    <?php endif; ?>
    
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>                       
@@ -166,23 +168,33 @@
     <script>
 
 
+
         $(document).ready(function() {
 
-            // Affichage du calendrier de sélectionner de la date au clic dans l'input date
 
+            // Gestion de l'input date 
             $('#date').datepicker({
-            isRTL: true,
-            autoclose: true, 
-            todayHighlight: true,
-            language: 'fr',
-            format: 'dd-mm-yyyy'
+                isRTL: true,
+                autoclose: true,
+                todayHighlight: true,
+                language: 'fr',
+                format: 'dd-mm-yyyy',
+                endDate: '-15y',  // Limiter la date maximale à aujourd'hui moins 15 ans
+                beforeShowDay: function (date) {
+                    // Calculer l'âge en années
+                    var today = new Date();
+                    var age = today.getFullYear() - date.getFullYear();
+
+                    // Si l'âge est inférieur à 15 ans, désactiver la date
+                    return [age >= 15, ''];
+                }
             });
-
-  
-
                 
  
+
+
             // Affichage de la photo quand Professeur est selectionné
+
             $("#type_personne").change(function() {
                 var selectedType = $(this).val();
                 var photoField = $("#photoField");
@@ -275,6 +287,9 @@
                 }
             });
         }
+
+
+        
     });
 
     </script>

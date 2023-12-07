@@ -164,6 +164,20 @@ public function enregistrerAvecPhp()
     
                     // Crée une nouvelle instance du modèle Personne et insère les données
                     $personne = new Personne();
+
+                    // Vérifie s'il existe des règles de validation dans le modèle
+                    if (!empty($personne->validationRules)) {
+                        // Applique les règles de validation
+                        if (!$personne->validate($data)) {
+
+                                // Si la validation échoue, stocke le message d'erreur dans la session
+                                session()->setFlashdata('alert', 'Veuillez remplir tous les champs svp !');
+                                
+                                // Retournez à la page précédente avec les données du formulaire
+                                return redirect()->back();
+
+                           }
+                    }
                     
                     $personne->insert($data);
     
@@ -325,7 +339,7 @@ public function updatePersonne()
                     $html = view('personnes/liste_personnes_enregistees', ['personnes' => $personnes ]);
 
 
-                    return $this->response->setJSON(['success' => true, 'html' => $html]);
+                    return $this->response->setJSON(['success' => true, 'html' => $html, 'message' => 'Modification effectuée avec succès !']);
                         }
             }
             
