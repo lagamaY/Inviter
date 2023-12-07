@@ -178,6 +178,7 @@
                     success: function (response) {
                         // console.log(response);  // Pour le débogage
                         if (response.success) {
+                            alert(response.message);
                             $('#personne-' + idPersonne).remove();
                         } else {
                             alert('Erreur lors de la suppression : ' + response.message);

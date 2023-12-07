@@ -17,9 +17,7 @@ class PersonneController extends BaseController
         
         $personne = new Personne();
 
-
-        $personnes = $personne->orderBy('id', 'desc')->findAll();
-
+        $personnes = $personne->orderBy('id', 'desc')->where('is_deleted', null)->findAll();
 
         // Ajoutez le libellé du type de personne à chaque personne
         foreach ($personnes as $personne) {
@@ -27,8 +25,6 @@ class PersonneController extends BaseController
             $typePersonne->idtypepersonne = $personne->idtypepersonne; 
             $personne->libelleTypePersonne = $typePersonne->getLibelle();
         }
-
-        
 
          return view('personnes/liste_personnes_enregistees', ['personnes' => $personnes ]);
 
@@ -357,30 +353,32 @@ public function supprimerPersonne()
 
     // Vérifiez si la clé 'id' existe dans la requête
     if ($this->request->getPost('id')) {
-
+        
         $id = $this->request->getPost('id');
-
-        // Récupérez le nom de la photo de la personne avant de la supprimer de la base de données
-        $photoToDelete = $personne->select('photo')->where('id', $id)->first()->photo;
     
-
-        // Supprimez la personne de la base de données
-        $personne->where('id', $id)->delete();
-
-        // Supprimez la photo du dossier si elle n'est pas égale à 'etudiant_photo'
-        if ($photoToDelete && $photoToDelete != 'etudiant_photo') {
-            $photoPath = FCPATH . 'public/photos/' . $photoToDelete;
-            if (file_exists($photoPath)) {
-                unlink($photoPath); // Supprime le fichier
+        // Vérifiez d'abord si l'enregistrement existe
+        $existingRecord = $personne->find($id);
+    
+        if ($existingRecord) {
+            // L'enregistrement existe, vous pouvez maintenant le mettre à jour
+            $affectedRows = $personne->set('is_deleted', date('Y-m-d H:i:s'))->where('id', $id)->update();
+    
+            if ($affectedRows > 0) {
+                // Mise à jour réussie
+                return $this->response->setJSON(['success' => true, 'message' => 'Personne supprimée avec succès']);
+            } else {
+                // Aucune mise à jour n'a été effectuée
+                return $this->response->setJSON(['success' => false, 'message' => 'Aucune personne trouvée pour l\'ID fourni']);
             }
+        } else {
+            // Aucun enregistrement trouvé pour l'ID fourni
+            return $this->response->setJSON(['success' => false, 'message' => 'Aucune personne trouvée pour l\'ID fourni']);
         }
-
-        // Pour le débogage - echo s'affiche dans la console
-        echo json_encode(['success' => true, 'message' => 'Personne supprimée avec succès']);
     } else {
         // Gérez le cas où 'id' n'est pas défini, par exemple, en renvoyant une erreur.
         echo json_encode(['success' => false, 'message' => 'ID not provided']);
     }
+    
 }
 
 
