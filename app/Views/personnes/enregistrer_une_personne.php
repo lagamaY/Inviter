@@ -101,7 +101,7 @@
         <div class="form-row">
             <div class="col">
                 <label>Nom :</label>
-                <input type="text" name="nom" >
+                <input type="text" name="nom" required>
             </div>
             <div class="col">
                 <label>Prénom :</label>
@@ -116,16 +116,17 @@
         </select>
 
         <label>Type de personne :</label>
-        <select name="type_personne" id="type_personne" required>
+        <select name="idtypepersonne" id="idtypepersonne" required>
             <?php foreach ($typesPersonne as $typePersonne): ?>
                 <option value="<?= $typePersonne->id ?>">
                     <?= $typePersonne->libelle ?>
                 </option>
             <?php endforeach; ?>
         </select>
+        
 
         <label>Date de naissance :</label>
-        <input type="text" name="date_naissance" id="date" placeholder="Choisir une date" required>
+        <input type="text" name="datenaissance" id="date" placeholder="Choisir une date" required>
 
         <div id="photoField">
             <label for="edit-photo" >Photo :</label>
@@ -148,15 +149,15 @@
 
 </div>
 
+    <?php if (session()->has('alert')) : ?>
+        <script>
+            alert("<?= session('alert') ?>");
+        </script>
+    <?php endif; ?>
+
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
-    <?php if (session()->has('alert')) : ?>
-    <script>
-        alert("<?= session('alert') ?>");
-    </script>
-    <?php endif; ?>
-   
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>                       
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>                     
@@ -195,7 +196,7 @@
 
             // Affichage de la photo quand Professeur est selectionné
 
-            $("#type_personne").change(function() {
+            $("#idtypepersonne").change(function() {
                 var selectedType = $(this).val();
                 var photoField = $("#photoField");
                 if (selectedType === "2") { 
@@ -232,7 +233,7 @@
         // Envoie des données du formulaire à la route PHP
         $('#btn-job-submit-php').on('click', function(event) {
             // Vérifier le type de personne
-            var selectedType = $('#type_personne').val();
+            var selectedType = $('#idtypepersonne').val();
             
             // Si le type de personne est égal à 2, vérifier si un fichier a été sélectionné
             if (selectedType === "2") {

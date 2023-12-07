@@ -110,6 +110,7 @@
                 <?php endforeach; ?>
             </select><br>
 
+           
 
 
             <label for="edit-date-naissance">Date de naissance :</label>

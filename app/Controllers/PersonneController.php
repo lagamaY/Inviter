@@ -18,7 +18,7 @@ class PersonneController extends BaseController
         $personne = new Personne();
 
 
-        $personnes = $personne->findAll();
+        $personnes = $personne->orderBy('id', 'desc')->findAll();
 
 
         // Ajoutez le libellé du type de personne à chaque personne
@@ -65,14 +65,9 @@ public function store()
         $personne = new Personne();
         // Vérifie si la méthode de la requête est 'post'
         if ($this->request->getMethod() == 'post') { 
-            // Récupère les données du formulaire
-            $data = [
-                'idtypepersonne' => $this->request->getVar('type_personne'),
-                'nom' => $this->request->getVar('nom'),
-                'prenom' => $this->request->getVar('prenom'),
-                'sexe' => $this->request->getVar('sexe'),
-                'datenaissance' => $this->request->getVar('date_naissance'),
-            ];
+
+            // Récupère tous les champs du formulaire en une seule fois
+             $data = $this->request->getPost();
 
             // Ajoutez cette condition avant le traitement du fichier
             if (!empty($_FILES['photo']['name'])) {
@@ -141,15 +136,10 @@ public function enregistrerAvecPhp()
             try {
                 // Vérifie si la méthode de la requête est 'post'
                 if ($this->request->getMethod() == 'post') {
-                    // Récupère les données du formulaire
-                    $data = [
-                        'idtypepersonne' => $this->request->getVar('type_personne'),
-                        'nom' => $this->request->getVar('nom'),
-                        'prenom' => $this->request->getVar('prenom'),
-                        'sexe' => $this->request->getVar('sexe'),
-                        'datenaissance' => $this->request->getVar('date_naissance'),
-                    ];
-    
+
+                    // Récupère tous les champs du formulaire en une seule fois
+                    $data = $this->request->getPost();
+
                     // Ajoutez cette condition avant le traitement du fichier
                     if (!empty($_FILES['photo']['name'])) {
                         // Traitement de l'image
@@ -178,8 +168,9 @@ public function enregistrerAvecPhp()
 
                            }
                     }
-                    
+
                     $personne->insert($data);
+
     
                      // Redirigez après l'enregistrement
                     return redirect()->to(route_to('accueil'))->with('success', 'ENREGISTREMENT EFFECTUE AVEC SUCCES');
@@ -268,11 +259,11 @@ public function updatePersonne()
         if($personneTrouve){
 
             $data = [
-                'idtypepersonne' => $this->request->getVar('type_personne'),
-                'nom' => $this->request->getVar('nom'),
-                'prenom' => $this->request->getVar('prenom'),
-                'sexe' => $this->request->getVar('sexe'),
-                'datenaissance' => $this->request->getVar('date_naissance'),
+                'idtypepersonne' => $this->request->getPost('type_personne'),
+                'nom' => $this->request->getPost('nom'),
+                'prenom' => $this->request->getPost('prenom'),
+                'sexe' => $this->request->getPost('sexe'),
+                'datenaissance' => $this->request->getPost('date_naissance'),
             ];
 
             // Vérifiez s'il y a une ancienne photo à supprimer
