@@ -120,7 +120,7 @@
 
             <div id="photoField" <?= ($personne->photo === "etudiant_photo") ? 'style="display:none;"' : ''; ?>>
                 <label for="edit-photo">Photo :</label>
-                <input type="file" name="photo" id="edit-photo" class="affichePhotoSelectionnee" value="<?= $personne->photo ?>"  accept="image/*">
+                <input type="file" name="photo" id="edit-photo" class="affichePhotoSelectionnee"   accept="image/*">
                 <?php if ($personne->photo !== "etudiant_photo"): ?>
                     <img id="current-photo" src="<?= base_url('/public/photos/'  . $personne->photo) ?>" alt="Photo actuelle">
                 <?php endif; ?>

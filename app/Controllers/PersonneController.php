@@ -262,16 +262,6 @@ public function updatePersonne()
                 'datenaissance' => $this->request->getPost('date_naissance'),
             ];
 
-            // Vérifiez s'il y a une ancienne photo à supprimer
-            // if ($personneTrouve->photo !== 'etudiant_photo') {
-
-            //     $oldPhotoPath = FCPATH . 'public/photos/' . $personneTrouve->photo;
-                
-            //     if (file_exists($oldPhotoPath)) {
-
-            //         unlink($oldPhotoPath); 
-            //     }
-            // }
     
              // Vérifiez si l'input photo est présent
 
@@ -283,38 +273,43 @@ public function updatePersonne()
                     $photoName = time() . '.' . $photo->getClientExtension();
                     $photo->move(ROOTPATH . 'public/photos', $photoName);
                     $data['photo'] = $photoName;
-                } else {
-                    // Gestion d'erreur si le fichier n'est pas valide ou ne peut pas être déplacé
-                    echo json_encode(['status' => 'error', 'message' => 'Erreur lors de la manipulation du fichier']);
-                    return;
-                }
+                } 
             } else {
 
                 if($this->request->getVar('type_personne') == 1){
 
                     $data['photo'] = 'etudiant_photo';
-                }else{
-                    return $this->response->setJSON(['error' => true, 'messages' => $personne->errors()]);
-                }
-                
+
+                }  
             }
 
             // Vérifie s'il existe des règles de validation dans le modèle
             if (!empty($personne->validationRules)) {
-                // Applique les règles de validation
+                
                 if (!$personne->validate($data)) {
                     // Si la validation échoue, renvoie les erreurs au client
                     return $this->response->setJSON(['error' => true, 'messages' => $personne->errors()]);
                 }else {
 
-               // Crée une nouvelle instance du modèle Personne et insère les données
+               // Mise à jour des données
                 
                 $personne->update($id, $data);
 
+                
+                // Vérifiez s'il y a une ancienne photo à supprimer
+                if ($personneTrouve->photo !== 'etudiant_photo') {
+
+                    $oldPhotoPath = FCPATH . 'public/photos/' . $personneTrouve->photo;
+                    
+                    if (file_exists($oldPhotoPath)) {
+
+                        unlink($oldPhotoPath); 
+                    }
+                }
+
+                // Page à retourner 
 
                 $personnes = $personne->findAll();
-
-
                 // Ajoutez le libellé du type de personne à chaque personne
                 foreach ($personnes as $personne) {
                     $typePersonne = new TypePersonne(); 
@@ -327,7 +322,7 @@ public function updatePersonne()
 
 
                     return $this->response->setJSON(['success' => true, 'html' => $html, 'message' => 'Modification effectuée avec succès !']);
-                        }
+                 }
             }
             
 

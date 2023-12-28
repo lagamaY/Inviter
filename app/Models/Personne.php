@@ -37,14 +37,20 @@ class Personne extends Model
 
 
     // Validation des champs
-    protected $validationRules = [
-        'nom'             => 'required',
-        'prenom'          => 'required',
-        'sexe'            => 'required',
-        'datenaissance'   => 'required',
-        'idtypepersonne'  => 'required',
-        'photo'           => 'required',
-    ];
+    // protected $validationRules = [
+    //     'nom'             => 'required',
+    //     'prenom'          => 'required',
+    //     'sexe'            => 'required',
+    //     'datenaissance'   => 'required',
+    //     'idtypepersonne'  => 'required',
+    //     'photo'           => 'required',
+    // ];
+
+    // Validation
+   protected $validationRules      = [];
+    protected $validationMessages   = [];
+    protected $skipValidation       = false;
+    protected $cleanValidationRules = true;
 
 
     
