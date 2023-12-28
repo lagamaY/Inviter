@@ -10,14 +10,23 @@ class Personne extends Model
 {
     protected $table            = 'personne';
     protected $primaryKey       = 'id';
-    protected $allowedFields = ['nom', 'prenom', 'sexe', 'photo', 'datenaissance', 'idtypepersonne', 'is_deleted'];
+    protected $allowedFields = ['nom', 'prenom', 'sexe', 'photo', 'datenaissance', 'idtypepersonne'];
     protected $with = 'TypePersonne';
+
+   
    
    // Relation avec le modèle TypePersonne
     protected $returnType = 'object';
-    protected $useSoftDeletes = false;
-    protected $useTimestamps = false;
-    protected $skipValidation = false;
+    
+    
+    // Dates
+    protected $useTimestamps = true;
+    protected $useSoftDeletes = true;
+    protected $dateFormat    = 'datetime';
+    protected $createdField  = 'created_at';
+    protected $updatedField  = 'updated_at';
+    protected $deletedField  = 'deleted_at';
+
 
     protected $belongsTo = [
         'typePersonnes' => [

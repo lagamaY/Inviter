@@ -17,7 +17,7 @@ class PersonneController extends BaseController
         
         $personne = new Personne();
 
-        $personnes = $personne->orderBy('id', 'desc')->where('is_deleted', null)->findAll();
+        $personnes = $personne->orderBy('id', 'desc')->findAll();
 
         // Ajoutez le libellé du type de personne à chaque personne
         foreach ($personnes as $personne) {
@@ -353,21 +353,20 @@ public function supprimerPersonne()
 
     // Vérifiez si la clé 'id' existe dans la requête
     if ($this->request->getPost('id')) {
-        
         $id = $this->request->getPost('id');
-    
+
         // Vérifiez d'abord si l'enregistrement existe
         $existingRecord = $personne->find($id);
-    
+
         if ($existingRecord) {
-            // L'enregistrement existe, vous pouvez maintenant le mettre à jour
-            $affectedRows = $personne->set('is_deleted', date('Y-m-d H:i:s'))->where('id', $id)->update();
-    
+            // L'enregistrement existe, vous pouvez maintenant le supprimer logiquement
+            $affectedRows = $personne->delete(['id' => $id]);
+
             if ($affectedRows > 0) {
-                // Mise à jour réussie
+                // Suppression logique réussie
                 return $this->response->setJSON(['success' => true, 'message' => 'Personne supprimée avec succès']);
             } else {
-                // Aucune mise à jour n'a été effectuée
+                // Aucune suppression logique n'a été effectuée
                 return $this->response->setJSON(['success' => false, 'message' => 'Aucune personne trouvée pour l\'ID fourni']);
             }
         } else {
@@ -378,7 +377,6 @@ public function supprimerPersonne()
         // Gérez le cas où 'id' n'est pas défini, par exemple, en renvoyant une erreur.
         echo json_encode(['success' => false, 'message' => 'ID not provided']);
     }
-    
 }
 
 
