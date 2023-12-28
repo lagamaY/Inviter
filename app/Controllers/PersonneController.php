@@ -263,15 +263,15 @@ public function updatePersonne()
             ];
 
             // Vérifiez s'il y a une ancienne photo à supprimer
-            if ($personneTrouve->photo !== 'etudiant_photo') {
+            // if ($personneTrouve->photo !== 'etudiant_photo') {
 
-                $oldPhotoPath = FCPATH . 'public/photos/' . $personneTrouve->photo;
+            //     $oldPhotoPath = FCPATH . 'public/photos/' . $personneTrouve->photo;
                 
-                if (file_exists($oldPhotoPath)) {
+            //     if (file_exists($oldPhotoPath)) {
 
-                    unlink($oldPhotoPath); // Supprime l'ancienne photo
-                }
-            }
+            //         unlink($oldPhotoPath); 
+            //     }
+            // }
     
              // Vérifiez si l'input photo est présent
 
@@ -359,6 +359,17 @@ public function supprimerPersonne()
         $existingRecord = $personne->find($id);
 
         if ($existingRecord) {
+
+            // Vérifiez s'il y a une ancienne photo à supprimer
+            if ($existingRecord->photo !== 'etudiant_photo') {
+
+                $oldPhotoPath = FCPATH . 'public/photos/' . $existingRecord->photo;
+                
+                if (file_exists($oldPhotoPath)) {
+
+                    unlink($oldPhotoPath); 
+                }
+            }
             // L'enregistrement existe, vous pouvez maintenant le supprimer logiquement
             $affectedRows = $personne->delete(['id' => $id]);
 
