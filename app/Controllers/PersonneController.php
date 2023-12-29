@@ -288,103 +288,134 @@ public function editPersonne()
 
 
 
-// Mise à jour des données de la personne dans la BD.
+
+
+
+
+
+
+
+
+
+
+// MISE  A JOUR 
 
 public function updatePersonne()
 {
-    $personne = new Personne();
+    try {
+        // Valider les données
+        $validation = \Config\Services::validation();
 
-    // Vérifiez si la clé 'id' existe dans la requête
-
-    if ($this->request->getPost('id')) {
-        
-        $id = $this->request->getPost('id');
-
-        $personneTrouve = $personne->find($id);
-
-        if($personneTrouve){
-
-            $data = [
-                'idtypepersonne' => $this->request->getPost('type_personne'),
-                'nom' => $this->request->getPost('nom'),
-                'prenom' => $this->request->getPost('prenom'),
-                'sexe' => $this->request->getPost('sexe'),
-                'datenaissance' => $this->request->getPost('date_naissance'),
-            ];
-
-    
-             // Vérifiez si l'input photo est présent
-
-            if (!empty($_FILES['photo']['name'])) {
-
-                $photo = $this->request->getFile('photo');
+        $validation->setRules([
+            'type_personne' => 'required|numeric',
+            'nom' => 'required|min_length[3]|max_length[15]',
+            'prenom' => 'required|min_length[3]|max_length[15]',
+            'sexe' => 'required|in_list[M,F]',
+            'date_naissance' => 'required',
+              
+        ], [
             
-                if ($photo->isValid() && !$photo->hasMoved()) {
-                    $photoName = time() . '.' . $photo->getClientExtension();
-                    $photo->move(ROOTPATH . 'public/photos', $photoName);
-                    $data['photo'] = $photoName;
-                } 
-            } else {
+            'type_personne' => [
+                'required' => 'Veuillez sélectionner le type de personne.',
+                'numeric' => 'Le type de personne doit être un nombre.',
+            ],
+            'nom' => [
+                'required' => 'Champ obligatoire avec 3 caractères au moins et 15 au plus.',
+            ],
+            'prenom' => [
+                'required' => 'Champ obligatoire avec 3 caractères au moins et 15 au plus.',
+            ],
+            'sexe' => [
+                'required' => 'Veuillez sélectionner le sexe.',
+            ],
+            'date_naissance' => [
+                'required' => 'Le champ date de naissance est obligatoire.',
+            ],
+        ]);
 
-                if($this->request->getVar('type_personne') == 1){
+        // Valider les règles
+        if ($validation->withRequest($this->request)->run()) {
+            $personne = new Personne();
+            $id = $this->request->getPost('id');
+            $personneTrouve = $personne->find($id);
 
-                    $data['photo'] = 'etudiant_photo';
+            if ($personneTrouve) {
+                $data = [
+                    'idtypepersonne' => $this->request->getPost('type_personne'),
+                    'nom' => $this->request->getPost('nom'),
+                    'prenom' => $this->request->getPost('prenom'),
+                    'sexe' => $this->request->getPost('sexe'),
+                    'datenaissance' => $this->request->getPost('date_naissance'),
+                ];
 
-                }  
-            }
+                // Vérifier si l'input photo est présent
+                if (!empty($_FILES['photo']['name'])) {
+                    $photo = $this->request->getFile('photo');
 
-            // Vérifie s'il existe des règles de validation dans le modèle
-            if (!empty($personne->validationRules)) {
-                
-                if (!$personne->validate($data)) {
-                    // Si la validation échoue, renvoie les erreurs au client
-                    return $this->response->setJSON(['error' => true, 'messages' => $personne->errors()]);
-                }else {
-
-               // Mise à jour des données
-                
-                $personne->update($id, $data);
-
-                
-                // Vérifiez s'il y a une ancienne photo à supprimer
-                if ($personneTrouve->photo !== 'etudiant_photo') {
-
-                    $oldPhotoPath = FCPATH . 'public/photos/' . $personneTrouve->photo;
-                    
-                    if (file_exists($oldPhotoPath)) {
-
-                        unlink($oldPhotoPath); 
+                    if ($photo->isValid() && !$photo->hasMoved()) {
+                        $photoName = time() . '.' . $photo->getClientExtension();
+                        $photo->move(ROOTPATH . 'public/photos', $photoName);
+                        $data['photo'] = $photoName;
+                    }
+                } else {
+                    // Gérer le cas où 'type_personne' est égal à 1
+                    if ($this->request->getVar('type_personne') == 1) {
+                        $data['photo'] = 'etudiant_photo';
                     }
                 }
 
-                // Page à retourner 
+                // Validation du modèle
+                if (!empty($personne->validationRules) && !$personne->validate($data)) {
+                    return $this->response->setJSON(['error' => true, 'messages' => $personne->errors()]);
+                } else {
+                    // Mise à jour des données
+                    $personne->update($id, $data);
 
-                $personnes = $personne->findAll();
-                // Ajoutez le libellé du type de personne à chaque personne
-                foreach ($personnes as $personne) {
-                    $typePersonne = new TypePersonne(); 
-                    $typePersonne->idtypepersonne = $personne->idtypepersonne; 
-                    $personne->libelleTypePersonne = $typePersonne->getLibelle();
-                }
-        
-                       
-                    $html = view('personnes/liste_personnes_enregistees', ['personnes' => $personnes ]);
+                    // Vérifier s'il y a une ancienne photo à supprimer
+                    if ($personneTrouve->photo !== 'etudiant_photo') {
+                        $oldPhotoPath = FCPATH . 'public/photos/' . $personneTrouve->photo;
 
+                        if (file_exists($oldPhotoPath)) {
+                            unlink($oldPhotoPath);
+                        }
+                    }
+
+                    // Page à retourner
+                    $personnes = $personne->findAll();
+
+                    // Ajouter le libellé du type de personne à chaque personne
+                    foreach ($personnes as $personne) {
+                        $typePersonne = new TypePersonne();
+                        $typePersonne->idtypepersonne = $personne->idtypepersonne;
+                        $personne->libelleTypePersonne = $typePersonne->getLibelle();
+                    }
+
+                    $html = view('personnes/liste_personnes_enregistrees', ['personnes' => $personnes]);
 
                     return $this->response->setJSON(['success' => true, 'html' => $html, 'message' => 'Modification effectuée avec succès !']);
-                 }
+                }
+            } else {
+                // Personne non trouvée
+                return $this->response->setJSON(['error' => true, 'message' => 'Personne non trouvée.']);
             }
-            
-
-            
+        } else {
+            // Retour en cas d'erreurs de validation
+            return $this->response->setJSON(['error' => true, 'errors' => $validation->getErrors()]);
         }
- 
+    } catch (\Exception $e) {
+        // En cas d'erreur, enregistre le message d'erreur
+        log_message('error', $e->getMessage());
 
-    } else {
-        // Gérez le cas où 'id' n'est pas défini, par exemple, en renvoyant une erreur.
-        echo json_encode(['success' => false, 'message' => 'ID non trouvé']);
+        // Retour en cas d'erreur
+        return $this->response->setJSON(['error' => true, 'errors' => $validation->getErrors()]);
     }
 }
+
+
+
+
+
+
 
 
 

@@ -296,7 +296,6 @@
                     $('body').html(data.html);
                 } else {
                     
-                   
                     // Si des erreurs sont présentes, remplissez les balises span correspondantes
                     $.each(data.errors, function (key, value) {
                         $('#' + key + 'Error').html(value);

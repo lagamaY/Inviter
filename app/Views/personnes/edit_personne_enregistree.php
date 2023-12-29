@@ -85,60 +85,72 @@
 
     <div class="container" id="formulaire-modification">
 
-            <input type="hidden" id="edit-id" name="id"  />
+    <input type="hidden" id="edit-id" name="id" />
 
-            <label for="edit-nom">Nom :</label>
-            <input type="text" name="nom" value="<?= $personne->nom ?>" id="edit-nom" required><br>
+    <label for="edit-nom">Nom :</label>
+    <input type="text" name="nom" value="<?= $personne->nom ?>" id="edit-nom" required>
+    <span class="error text-danger" id="nomError"></span>
+    <?php if (isset($errors['nom'])): ?>
+        <span class="error text-danger"><?= $errors['nom'] ?></span>
+    <?php endif; ?>
 
-            <label for="edit-prenom">Prénom :</label>
-            <input type="text" name="prenom" value="<?= $personne->prenom ?>" id="edit-prenom" required><br>
+    <label for="edit-prenom">Prénom :</label>
+    <input type="text" name="prenom" value="<?= $personne->prenom ?>" id="edit-prenom" required>
+    <span class="error text-danger" id="prenomError"></span>
+    <?php if (isset($errors['prenom'])): ?>
+        <span class="error text-danger"><?= $errors['prenom'] ?></span>
+    <?php endif; ?>
 
+    <label for="edit-sexe">Sexe :</label>
+    <select name="sexe" id="edit-sexe" required>
+        <option value="M" <?= ($personne->sexe === 'M') ? 'selected' : '' ?>>Masculin</option>
+        <option value="F" <?= ($personne->sexe === 'F') ? 'selected' : '' ?>>Féminin</option>
+    </select>
+    <span class="error text-danger" id="sexeError"></span>
+    <?php if (isset($errors['sexe'])): ?>
+        <span class="error text-danger"><?= $errors['sexe'] ?></span>
+    <?php endif; ?>
 
-            <label for="edit-sexe">Sexe :</label>
-            <select name="sexe" id="edit-sexe" required>
-                <option value="M" <?= ($personne->sexe === 'M') ? 'selected' : '' ?>>Masculin</option>
-                <option value="F" <?= ($personne->sexe === 'F') ? 'selected' : '' ?>>Féminin</option>
-            </select><br>
+    <label for="type_personne">Type de personne :</label>
+    <select name="type_personne" id="type_personne" required>
+        <?php foreach ($typesPersonne as $type): ?>
+            <option value="<?= $type->id ?>" <?= ($type->libelle === $personne->libelleTypePersonne) ? 'selected' : '' ?>>
+                <?= $type->libelle ?>
+            </option>
+        <?php endforeach; ?>
+    </select>
+    <span class="error text-danger" id="typePersonneError"></span>
+    <?php if (isset($errors['type_personne'])): ?>
+        <span class="error text-danger"><?= $errors['type_personne'] ?></span>
+    <?php endif; ?>
 
-        
-            <label for="type_personne">Type de personne :</label>
-            <select name="type_personne" id="type_personne" required>
-                <?php foreach ($typesPersonne as $type): ?>
-                    <option value="<?= $type->id ?>" <?= ($type->libelle === $personne->libelleTypePersonne) ? 'selected' : '' ?> >
-                        <?= $type->libelle ?>
-                    </option>
-                <?php endforeach; ?>
-            </select><br>
+    <label for="edit-date-naissance">Date de naissance :</label>
+    <input type="date" name="date_naissance" value="<?= date('Y-m-d', strtotime($personne->datenaissance)) ?>" id="edit-date-naissance" required>
+    <span class="error text-danger" id="datenaissanceError"></span>
+    <?php if (isset($errors['datenaissance'])): ?>
+        <span class="error text-danger"><?= $errors['datenaissance'] ?></span>
+    <?php endif; ?>
 
-           
-
-
-            <label for="edit-date-naissance">Date de naissance :</label>
-            <input type="date" name="date_naissance" value="<?= date('Y-m-d', strtotime($personne->datenaissance)) ?>" id="edit-date-naissance"  required><br>
-
-
-
-            <div id="photoField" <?= ($personne->photo === "etudiant_photo") ? 'style="display:none;"' : ''; ?>>
-                <label for="edit-photo">Photo :</label>
-                <input type="file" name="photo" id="edit-photo" class="affichePhotoSelectionnee"   accept="image/*">
-                <?php if ($personne->photo !== "etudiant_photo"): ?>
-                    <img id="current-photo" src="<?= base_url('/public/photos/'  . $personne->photo) ?>" alt="Photo actuelle">
-                <?php endif; ?>
-                <br>
-            </div>
-
-
-
-
-            <div class="btn-container">
-                <a href="<?php echo base_url('/'); ?>" class="btn-add">Déjà enregistré ? voir la liste.</a>
-                <button type="submit" class="btn-update" id-personne="<?= $personne->id ?>">Mettre à jour</button>
-            </div>
-
-
-        
-        
+    <div id="photoField" <?= ($personne->photo === "etudiant_photo") ? 'style="display:none;"' : ''; ?>>
+        <label for="edit-photo">Photo :</label>
+        <input type="file" name="photo" id="edit-photo" class="affichePhotoSelectionnee" accept="image/*">
+        <?php if ($personne->photo !== "etudiant_photo"): ?>
+            <img id="current-photo" src="<?= base_url('/public/photos/' . $personne->photo) ?>" alt="Photo actuelle">
+        <?php endif; ?>
+        <br>
+        <span class="error text-danger" id="photoError"></span>
+        <?php if (isset($errors['photo'])): ?>
+            <span class="error text-danger"><?= $errors['photo'] ?></span>
+        <?php endif; ?>
     </div>
+
+    <div class="btn-container">
+        <a href="<?php echo base_url('/'); ?>" class="btn-add">Déjà enregistré ? voir la liste.</a>
+        <button type="submit" class="btn-update" id-personne="<?= $personne->id ?>">Mettre à jour</button>
+    </div>
+
+</div>
+
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
@@ -238,7 +250,10 @@
                             alert(data.message); // Afficher le message de succès
                             $('body').html(data.html);
                         } else {
-                            alert('Échec de la mise à jour, veuillez remplir tous les champs svp !');
+                            // Si des erreurs sont présentes, remplissez les balises span correspondantes
+                            $.each(data.errors, function (key, value) {
+                                $('#' + key + 'Error').html(value);
+                            });
                         }
                     },
                     error: function (xhr, status, error) {
