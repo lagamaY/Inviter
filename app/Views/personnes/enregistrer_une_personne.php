@@ -100,50 +100,62 @@
     <form id="ajoutPersonneForm" method="post" action="" enctype="multipart/form-data">
         <div class="form-row">
             <div class="col">
-                <label>Nom :</label>
-                <input type="text" name="nom" required>
+                <label for='nom'>Nom :</label>
+                <input type="text" name="nom" id="nom">
+                <?php if(isset($errors['nom'])): ?>
+                    <span class="error text-danger"><?= $errors['nom'] ?></span>
+                <?php endif; ?>
             </div>
             <div class="col">
-                <label>Prénom :</label>
-                <input type="text" name="prenom" required>
+                <label for='prenom'>Prénom :</label>
+                <input type="text" name="prenom" id="prenom">
+                <?php if(isset($errors['prenom'])): ?>
+                    <span class="error text-danger"><?= $errors['prenom'] ?></span>
+                <?php endif; ?>
             </div>
         </div>
 
-        <label>Sexe :</label>
-        <select name="sexe" required>
+        <label for='sexe'>Sexe :</label>
+        <select name="sexe" id='sexe' required>
             <option value="M">Masculin</option>
             <option value="F">Féminin</option>
         </select>
+        <?php if(isset($errors['sexe'])): ?>
+            <span class="error text-danger"><?= $errors['sexe'] ?></span>
+        <?php endif; ?>
 
-        <label>Type de personne :</label>
-        <select name="idtypepersonne" id="idtypepersonne" required>
+        <label for='idtypepersonne'>Type de personne :</label>
+        <select name="idtypepersonne" id="idtypepersonne" >
             <?php foreach ($typesPersonne as $typePersonne): ?>
                 <option value="<?= $typePersonne->id ?>">
                     <?= $typePersonne->libelle ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        
+        <?php if(isset($errors['idtypepersonne'])): ?>
+            <span class="error text-danger"><?= $errors['idtypepersonne'] ?></span>
+        <?php endif; ?>
 
-        <label>Date de naissance :</label>
-        <input type="text" name="datenaissance" id="date" placeholder="Choisir une date" required>
+        <label for='date'>Date de naissance :</label>
+        <input type="text" name="datenaissance" id="date" placeholder="Choisir une date" >
+        <?php if(isset($errors['datenaissance'])): ?>
+            <span class="error text-danger"><?= $errors['datenaissance'] ?></span>
+        <?php endif; ?>
 
         <div id="photoField">
             <label for="edit-photo" >Photo :</label>
             <input type="file" name="photo" id="edit-photo" accept="image/*" >
             <img id="previewPhoto" src="#" alt="Aperçu de la photo" style="display:none;">
-
         </div>
-
+        <?php if(isset($errors['photo'])): ?>
+            <span class="error text-danger"><?= $errors['photo'] ?></span>
+        <?php endif; ?>
 
         <div class="btn-container">
             <a href="<?php echo base_url('/'); ?>" class="btn-add">Déjà enregistré ? </a>
             <button class="btn-submit" type="button" id="btn-job-submit-ajax">Enregistrer</button>
             <button class="btn-submit" type="submit" id="btn-job-submit-php" name="submit_php">Enregistrer & Quitter</button>
-
         </div>
-
-
     </form>
 
 
@@ -277,7 +289,7 @@
                         $('body').html(data.html);
                     } else {
                         // Afficher un message d'erreur
-                        alert("Échec de l'enregistrement, veuillez remplir tous les champs svp !");
+                        // alert("Échec de l'enregistrement, veuillez remplir tous les champs svp !");
                         console.log(response.message);
                     }
                 },

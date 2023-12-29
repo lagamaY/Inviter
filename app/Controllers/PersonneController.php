@@ -56,14 +56,25 @@ class PersonneController extends BaseController
 public function store()
 {
     try {
+        // Valider les données
+        $validation = \Config\Services::validation();
 
-        // Crée une nouvelle instance du modèle Personne
-        $personne = new Personne();
-        // Vérifie si la méthode de la requête est 'post'
-        if ($this->request->getMethod() == 'post') { 
+        $validation->setRules([
+            'nom' => 'required|min_length[3]|max_length[15]',
+            'prenom' => 'required|min_length[3]|max_length[15]',
+            'sexe' => 'required|in_list[M,F]',
+            'idtypepersonne' => 'required|numeric',
+            'datenaissance' => 'required',
+        ]);
+
+        // Valider les règles
+        if ($validation->withRequest($this->request)->run()) {
+
+            // Crée une nouvelle instance du modèle Personne
+            $personne = new Personne();
 
             // Récupère tous les champs du formulaire en une seule fois
-             $data = $this->request->getPost();
+            $data = $this->request->getPost();
 
             // Ajoutez cette condition avant le traitement du fichier
             if (!empty($_FILES['photo']['name'])) {
@@ -74,19 +85,10 @@ public function store()
                 $data['photo'] = $photoName;
             } else {
                 // Définit une valeur par défaut si aucune image n'est téléchargée
-                if($data['idtypepersonne'] == 2){
+                if ($data['idtypepersonne'] == 2) {
                     return $this->response->setJSON(['error' => true, 'messages' => $personne->errors()]);
-                }else{
+                } else {
                     $data['photo'] = 'etudiant_photo';
-                }
-            }
-
-            // Vérifie s'il existe des règles de validation dans le modèle
-            if (!empty($personne->validationRules)) {
-                // Applique les règles de validation
-                if (!$personne->validate($data)) {
-                    // Si la validation échoue, renvoie les erreurs au client
-                    return $this->response->setJSON(['error' => true, 'messages' => $personne->errors()]);
                 }
             }
 
@@ -98,12 +100,15 @@ public function store()
             $typesPersonne = new TypePersonne();
 
             // Récupérer les types de personnes
-            $typesPersonne = $typesPersonne->findAll();
-            // Charger la vue avec les données récupérées
+            $typesPersonneList = $typesPersonne->findAll();
 
-            $html = view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
+            // Charger la vue avec les données récupérées
+            $html = view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonneList]);
 
             return $this->response->setJSON(['success' => true, 'html' => $html, 'message' => 'ENREGISTREMENT EFFECTUE AVEC SUCCES']);
+        } else {
+            // En cas d'échec de la validation, renvoyer les erreurs
+            return $this->response->setJSON(['error' => true, 'messages' => $validation->getErrors()]);
         }
     } catch (\Exception $e) {
         // En cas d'erreur, enregistre le message d'erreur
@@ -113,80 +118,99 @@ public function store()
         $typesPersonne = new TypePersonne();
 
         // Récupère tous les types de personnes
-        $typesPersonne = $typesPersonne->findAll();
+        $typesPersonneList = $typesPersonne->findAll();
 
         // Charge la vue avec les données récupérées
-        return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
+        return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonneList]);
     }
 }
 
 
 
 
-// Enregistrement d'une personne dans la bd avec PHP
+
 
 public function enregistrerAvecPhp()
-    {
-      
-        {
-            try {
-                // Vérifie si la méthode de la requête est 'post'
-                if ($this->request->getMethod() == 'post') {
+{
+    try {
+        // Valider les données
+        $validation = \Config\Services::validation();
 
-                    // Récupère tous les champs du formulaire en une seule fois
-                    $data = $this->request->getPost();
+        $validation->setRules([
+            'nom' => 'required|min_length[3]|max_length[15]',
+            'prenom' => 'required|min_length[3]|max_length[15]',
+            'sexe' => 'required|in_list[M,F]',
+            'idtypepersonne' => 'required|numeric',
+            'datenaissance' => 'required',
+        ], [
+            'nom' => [
+                'required' => 'Champ obligatoire avec 3 caractères au moins et 15 au plus.',
+            ],
+            'prenom' => [
+                'required' => 'Champ obligatoire avec 3 caractères au moins et 15 au plus.',
+            ],
+            'sexe' => [
+                'required' => 'Veuillez sélectionner le sexe.',
+            ],
+            'idtypepersonne' => [
+                'required' => 'Veuillez sélectionner le type de personne.',
+            ],
+            'datenaissance' => [
+                'required' => 'Le champ date de naissance est obligatoire.',
+            ],
+        ]);
 
-                    // Ajoutez cette condition avant le traitement du fichier
-                    if (!empty($_FILES['photo']['name'])) {
-                        // Traitement de l'image
-                        $photo = $this->request->getFile('photo');
-                        $photoName = time() . '.' . $photo->getClientExtension();
-                        $photo->move(ROOTPATH . 'public/photos', $photoName);
-                        $data['photo'] = $photoName;
-                    } else {
-                        // Définit une valeur par défaut si aucune image n'est téléchargée
-                        $data['photo'] = 'etudiant_photo';
-                    }
-    
-                    // Crée une nouvelle instance du modèle Personne et insère les données
-                    $personne = new Personne();
+        // Vérifie si la méthode de la requête est 'post'
+        if ($this->request->getMethod() == 'post') {
 
-                    // Vérifie s'il existe des règles de validation dans le modèle
-                    if (!empty($personne->validationRules)) {
-                        // Applique les règles de validation
-                        if (!$personne->validate($data)) {
+            // Récupère tous les champs du formulaire en une seule fois
+            $data = $this->request->getPost();
 
-                                // Si la validation échoue, stocke le message d'erreur dans la session
-                                session()->setFlashdata('alert', 'Veuillez remplir tous les champs svp !');
-                                
-                                // Retournez à la page précédente avec les données du formulaire
-                                return redirect()->back();
+            // Valider les règles
+            if ($validation->withRequest($this->request)->run()) {
 
-                           }
-                    }
-
-                    $personne->insert($data);
-
-    
-                     // Redirigez après l'enregistrement
-                    return redirect()->to(route_to('accueil'))->with('success', 'ENREGISTREMENT EFFECTUE AVEC SUCCES');
+                // Traitement de l'image
+                if (!empty($_FILES['photo']['name'])) {
+                    $photo = $this->request->getFile('photo');
+                    $photoName = time() . '.' . $photo->getClientExtension();
+                    $photo->move(ROOTPATH . 'public/photos', $photoName);
+                    $data['photo'] = $photoName;
+                } else {
+                    $data['photo'] = 'etudiant_photo';
                 }
-            } catch (\Exception $e) {
-                // En cas d'erreur, enregistre le message d'erreur dans le journal des erreurs
-                log_message('error', $e->getMessage());
-    
-                // Crée une nouvelle instance du modèle TypePersonne
-                $typesPersonne = new TypePersonne();
-    
-                // Récupère tous les types de personnes
-                $typesPersonne = $typesPersonne->findAll();
-    
+
+                // Crée une nouvelle instance du modèle Personne et insère les données
+                $personne = new Personne();
+                $personne->insert($data);
+
+                // Redirigez après l'enregistrement
+                return redirect()->to(route_to('accueil'))->with('success', 'ENREGISTREMENT EFFECTUE AVEC SUCCES');
+            } else {
                 // Charge la vue avec les données récupérées
-                return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne]);
+                return $this->afficherFormulaire($validation);
             }
         }
-    
+    } catch (\Exception $e) {
+        // En cas d'erreur, enregistre le message d'erreur dans le journal des erreurs
+        log_message('error', $e->getMessage());
+
+        // Charge la vue avec les données récupérées
+        return $this->afficherFormulaire($validation);
     }
+}
+
+private function afficherFormulaire($validation)
+{
+    // Crée une nouvelle instance du modèle TypePersonne
+    $typesPersonne = new TypePersonne();
+
+    // Récupère tous les types de personnes
+    $typesPersonne = $typesPersonne->findAll();
+
+    // Charge la vue avec les données récupérées
+    return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonne, 'errors' => $validation->getErrors()]);
+
+}
 
 
 
