@@ -100,63 +100,70 @@
     <form id="ajoutPersonneForm" method="post" action="" enctype="multipart/form-data">
         <div class="form-row">
             <div class="col">
-                <label for='nom'>Nom :</label>
+                <label for="nom">Nom :</label>
                 <input type="text" name="nom" id="nom">
-                <?php if(isset($errors['nom'])): ?>
+                <span class="error text-danger" id="nomError"></span>
+                <?php if (isset($errors['nom'])): ?>
                     <span class="error text-danger"><?= $errors['nom'] ?></span>
                 <?php endif; ?>
             </div>
             <div class="col">
-                <label for='prenom'>Prénom :</label>
+                <label for="prenom">Prénom :</label>
                 <input type="text" name="prenom" id="prenom">
-                <?php if(isset($errors['prenom'])): ?>
+                <span class="error text-danger" id="prenomError"></span>
+                <?php if (isset($errors['prenom'])): ?>
                     <span class="error text-danger"><?= $errors['prenom'] ?></span>
                 <?php endif; ?>
             </div>
         </div>
 
-        <label for='sexe'>Sexe :</label>
-        <select name="sexe" id='sexe' required>
+        <label for="sexe">Sexe :</label>
+        <select name="sexe" id="sexe" required>
             <option value="M">Masculin</option>
             <option value="F">Féminin</option>
         </select>
-        <?php if(isset($errors['sexe'])): ?>
+        <span class="error text-danger" id="sexeError"></span>
+        <?php if (isset($errors['sexe'])): ?>
             <span class="error text-danger"><?= $errors['sexe'] ?></span>
         <?php endif; ?>
 
-        <label for='idtypepersonne'>Type de personne :</label>
-        <select name="idtypepersonne" id="idtypepersonne" >
+        <label for="idtypepersonne">Type de personne :</label>
+        <select name="idtypepersonne" id="idtypepersonne">
             <?php foreach ($typesPersonne as $typePersonne): ?>
                 <option value="<?= $typePersonne->id ?>">
                     <?= $typePersonne->libelle ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <?php if(isset($errors['idtypepersonne'])): ?>
+        <span class="error text-danger" id="idtypepersonneError"></span>
+        <?php if (isset($errors['idtypepersonne'])): ?>
             <span class="error text-danger"><?= $errors['idtypepersonne'] ?></span>
         <?php endif; ?>
 
-        <label for='date'>Date de naissance :</label>
-        <input type="text" name="datenaissance" id="date" placeholder="Choisir une date" >
-        <?php if(isset($errors['datenaissance'])): ?>
+        <label for="date">Date de naissance :</label>
+        <input type="text" name="datenaissance" id="date" placeholder="Choisir une date">
+        <span class="error text-danger" id="datenaissanceError"></span>
+        <?php if (isset($errors['datenaissance'])): ?>
             <span class="error text-danger"><?= $errors['datenaissance'] ?></span>
         <?php endif; ?>
 
         <div id="photoField">
-            <label for="edit-photo" >Photo :</label>
-            <input type="file" name="photo" id="edit-photo" accept="image/*" >
+            <label for="edit-photo">Photo :</label>
+            <input type="file" name="photo" id="edit-photo" accept="image/*">
             <img id="previewPhoto" src="#" alt="Aperçu de la photo" style="display:none;">
         </div>
-        <?php if(isset($errors['photo'])): ?>
+        <span class="error text-danger" id="photoError"></span>
+        <?php if (isset($errors['photo'])): ?>
             <span class="error text-danger"><?= $errors['photo'] ?></span>
         <?php endif; ?>
 
         <div class="btn-container">
-            <a href="<?php echo base_url('/'); ?>" class="btn-add">Déjà enregistré ? </a>
+            <a href="<?php echo base_url('/'); ?>" class="btn-add">Déjà enregistré ?</a>
             <button class="btn-submit" type="button" id="btn-job-submit-ajax">Enregistrer</button>
             <button class="btn-submit" type="submit" id="btn-job-submit-php" name="submit_php">Enregistrer & Quitter</button>
         </div>
     </form>
+
 
 
 </div>
@@ -284,18 +291,23 @@
                 cache: false,
                 processData: false,
                 success: function(data) {
-                    if (data.success) {
-                        alert(data.message); // Afficher le message de succès
-                        $('body').html(data.html);
-                    } else {
-                        // Afficher un message d'erreur
-                        // alert("Échec de l'enregistrement, veuillez remplir tous les champs svp !");
-                        console.log(response.message);
-                    }
-                },
+                if (data.success) {
+                    alert(data.message); // Afficher le message de succès
+                    $('body').html(data.html);
+                } else {
+                    
+                   
+                    // Si des erreurs sont présentes, remplissez les balises span correspondantes
+                    $.each(data.errors, function (key, value) {
+                        $('#' + key + 'Error').html(value);
+                    });
+
+                }
+            },
+
                 error: function() {
                     // Afficher un message d'erreur
-                    alert("Échec de l'enregistrement, veuillez remplir tous les champs svp !");
+                    
                     console.error('Une erreur s\'est produite lors de la requête AJAX.');
                 }
             });

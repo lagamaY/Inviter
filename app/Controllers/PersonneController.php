@@ -56,7 +56,7 @@ class PersonneController extends BaseController
 public function store()
 {
     try {
-        // Valider les données
+             // Valider les données
         $validation = \Config\Services::validation();
 
         $validation->setRules([
@@ -65,6 +65,22 @@ public function store()
             'sexe' => 'required|in_list[M,F]',
             'idtypepersonne' => 'required|numeric',
             'datenaissance' => 'required',
+        ], [
+            'nom' => [
+                'required' => 'Champ obligatoire avec 3 caractères au moins et 15 au plus.',
+            ],
+            'prenom' => [
+                'required' => 'Champ obligatoire avec 3 caractères au moins et 15 au plus.',
+            ],
+            'sexe' => [
+                'required' => 'Veuillez sélectionner le sexe.',
+            ],
+            'idtypepersonne' => [
+                'required' => 'Veuillez sélectionner le type de personne.',
+            ],
+            'datenaissance' => [
+                'required' => 'Le champ date de naissance est obligatoire.',
+            ],
         ]);
 
         // Valider les règles
@@ -107,23 +123,33 @@ public function store()
 
             return $this->response->setJSON(['success' => true, 'html' => $html, 'message' => 'ENREGISTREMENT EFFECTUE AVEC SUCCES']);
         } else {
-            // En cas d'échec de la validation, renvoyer les erreurs
-            return $this->response->setJSON(['error' => true, 'messages' => $validation->getErrors()]);
+
+             // Retour
+            
+            return $this->response->setJSON([
+                'error' => true,
+                'errors' => $validation->getErrors()
+            ]);
+            
+         
+            
         }
     } catch (\Exception $e) {
         // En cas d'erreur, enregistre le message d'erreur
         log_message('error', $e->getMessage());
 
-        // Crée une nouvelle instance du modèle TypePersonne
-        $typesPersonne = new TypePersonne();
-
-        // Récupère tous les types de personnes
-        $typesPersonneList = $typesPersonne->findAll();
-
-        // Charge la vue avec les données récupérées
-        return view('personnes/enregistrer_une_personne', ['typesPersonne' => $typesPersonneList]);
-    }
+        // Retour
+                    
+        return $this->response->setJSON([
+            'error' => true,
+            'errors' => $validation->getErrors()
+        ]);
+            }
 }
+
+
+
+
 
 
 
